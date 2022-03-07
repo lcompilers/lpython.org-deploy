@@ -1,2 +1,2 @@
 # lpython.org-deploy
-Sources of deployed webpage behind https://lpython.org/
+Interactive LLVM-based Python Compiler for Modern Architectures
