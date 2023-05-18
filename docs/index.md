@@ -19,6 +19,8 @@ Links to other available Python compilers:
 * [Cython](https://cython.org/)
 * [Pythran](https://pythran.readthedocs.io/en/latest/)
 * [Numba](https://numba.pydata.org/)
+* [Codon](https://github.com/exaloop/codon)
+* [Mojo](https://github.com/modularml/mojo)
 * [Transonic](https://transonic.readthedocs.io/en/latest/index.html)
 * [Nuitka](https://nuitka.net/)
 * [Seq-lang](https://seq-lang.org/)
