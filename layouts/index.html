@@ -1,0 +1,39 @@
+{{ define "main" }}
+  <div role="main" class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        {{ (.Site.GetPage "/index_intro").Content }}
+      </div>
+    </div>
+    <div id=benefits>
+      <div class="row">
+        <h1 class="h1heading">Advantages of Fortran</h1>
+      </div>
+      <div class="row">
+        <h2 class="h2heading">Simple, standard, fast</h2>
+      </div>
+      <div class="row">
+        {{ range sort (.Site.GetPage "/benefits").Resources "Name" }}
+        <div class="col-lg-4 col-md-6" id="benefit">
+           <h2><i class="{{ .Params.icon }}"></i>{{ .Title }}</h2>
+           {{ .Content }}
+        </div>
+        {{ end }}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        {{ with .Content }}
+            {{.}}
+        {{ end }}
+      </div>
+    </div>
+  </div>
+{{ end }}
+
+
+{{ define "head" }}
+  {{ partial "head.html" . }}
+  <!-- For GitHub Button -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+{{ end }}

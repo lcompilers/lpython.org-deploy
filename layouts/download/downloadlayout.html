@@ -1,0 +1,62 @@
+{{ define "main" }}
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <h1>Binaries</h1>
+    The easiest way to install LFortran is to install the
+    <code>lfortran</code> Conda
+    package from conda-forge.
+
+    See the
+    <a href="https://docs.lfortran.org/installation">installation instructions</a>
+    in the Documentation.
+
+    <h1>Source Tarballs</h1>
+    When installing from source, the recommended way is to use the release
+    tarballs.
+
+    For installation instructions consult the
+    <a href="https://docs.lfortran.org/installation/">installation page</a>
+    in the Documentation.
+
+{{ $tarballs := getJSON "https://raw.githubusercontent.com/lfortran/tarballs/master/docs/data.json" }}
+    <h2>Releases</h2>
+    Latest release:
+    <ul>
+        {{ range first 1 (sort $tarballs.release ".created" "desc") }}
+        <li>
+            <a href="{{ .url }}">lfortran-{{ .version }}.tar.gz</a>
+            ({{ dateFormat "Jan 2, 2006" .created }})
+        </li>
+        {{ end }}
+    </ul>
+    All releases:
+    <a href="#all_releases" class="collapsed" data-toggle="collapse">
+        <span class="if-collapsed">show <i class="fas fa-caret-down"></i></span>
+        <span class="if-not-collapsed">hide <i class="fas fa-caret-up"></i></span>
+    </a>
+    <div id="all_releases" class="collapse">
+        <ul>
+            {{ range (sort $tarballs.release ".created" "desc") }}
+            <li>
+                <a href="{{ .url }}">lfortran-{{ .version }}.tar.gz</a>
+                ({{ dateFormat "Jan 2, 2006" .created }})
+            </li>
+            {{ end }}
+        </ul>
+    </div>
+    <h2>Development Version</h2>
+    Latest development version in master:
+    <ul>
+        {{ range first 1 (sort $tarballs.dev ".created" "desc") }}
+        <li>
+            <a href="{{ .url }}">lfortran-{{ .version }}.tar.gz</a>
+            ({{ dateFormat "Jan 2, 2006" .created }})
+        </li>
+        {{ end }}
+    </ul>
+      {{ .Content }}
+    </div>
+  </div>
+</div>
+{{ end }}

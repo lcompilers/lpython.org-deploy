@@ -1,0 +1,31 @@
+baseURL = "https://lfortran.org/"
+languageCode = "en-us"
+title = "LFortran"
+theme = "beautifulhugo"
+googleAnalytics = "UA-138613977-1"
+
+[permalinks]
+  blog = "blog/:year/:month/:title/"
+
+[taxonomies]
+  tag = "tags"
+
+[Params]
+  subtitle = "Modern interactive LLVM-based Fortran compiler"
+  readingTime = true
+  wordCount = true
+
+[[menu.main]]
+    name = "Download"
+    url = "download/"
+    weight = 1
+
+[[menu.main]]
+    name = "Documentation"
+    url = "https://docs.lfortran.org/"
+    weight = 2
+
+[[menu.main]]
+    name = "Blog"
+    url = "blog/"
+    weight = 3
