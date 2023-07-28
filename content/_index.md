@@ -63,8 +63,8 @@ Please vote on issues in our [issue tracker] that you want us to prioritize
 
 
 ## Links to other available Python compilers:
-Name | Total Contributors | Recent Contributors | Total stars
---|--|--|--
+Name | Total Contributors | Total stars
+--|--|--
 [PyTorch](https://github.com/pytorch/pytorch)               | 2857 | 69253
 [Pyston](https://github.com/pyston/pyston)                  | 1263 |  2426
 [JAX](https://github.com/google/jax)                        |  523 | 24010
