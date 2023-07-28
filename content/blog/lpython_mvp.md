@@ -200,8 +200,13 @@ We compare JIT compilation of LPython to Numba on **summation of all the element
 
 **System Information**
 
-Softwares - The numba version used is `numba-0.57.1`, LPython commit is `a39430386a0e7ea5de2f569e27229017dff78330` and Python version is `Python 3.10.4`.
+| Compiler | Version |
+|---|---|
+| Numba | 0.57.1 |
+| LPython | 0.19.0 |
+| Python | 3.10.4 |
 
+<br/>
 <!-- Add your systems like System - Linux, System - Windows, etc and then add the results for your System in the tables that follow -->
 
 **Summation of all the elements of a 1-D array**
@@ -569,7 +574,15 @@ Next, we see how LPython compares to other AoT compilers and to the standard CPy
 
 **System Information**
 
-The Clang++ version used is `14.0.3`, `g++` version is `11.3.0`, LPython commit is `a39430386a0e7ea5de2f569e27229017dff78330` and Python version is `Python 3.10.4`.
+
+| Compiler | Version |
+|---|---|
+| clang++ | 14.0.3 |
+| g++ | 11.3.0 |
+| LPython | 0.19.0 |
+| Python | 3.10.4 |
+
+<br/>
 
 **Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph**
 
