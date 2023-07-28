@@ -2,7 +2,7 @@
 title: "LPython: Novel, Fast, Retargetable Python Compiler"
 date: 2023-07-28
 tags: ["Python", "Announcement"]
-author: "[Ondřej Čertík](https://ondrejcertik.com/), [Brian Beckman](https://www.linkedin.com/in/brianbeckman), [Gagandeep Singh](https://github.com/czgdp1807), [Thirumalai Shaktivel](https://www.linkedin.com/in/thirumalai-shaktivel/), [Smit Lunagariya](https://www.linkedin.com/in/smit-lunagariya-356b93179/), [Ubaid Shaikh](https://Shaikh-Ubaid.github.io/), [Naman Gera](https://github.com/namannimmo10), [Pranav Goswami](https://www.linkedin.com/in/pranavgoswami1/), [Rohit Goswami](https://rgoswami.me), [Dominic Poerio](https://github.com/dpoerio), [Akshānsh Bhatt](https://github.com/akshanshbhatt)"
+author: "[Ondřej Čertík](https://ondrejcertik.com/), [Brian Beckman](https://www.linkedin.com/in/brianbeckman), [Gagandeep Singh](https://github.com/czgdp1807), [Thirumalai Shaktivel](https://www.linkedin.com/in/thirumalai-shaktivel/), [Smit Lunagariya](https://www.linkedin.com/in/smit-lunagariya-356b93179/), [Ubaid Shaikh](https://Shaikh-Ubaid.github.io/), [Naman Gera](https://github.com/namannimmo10), [Pranav Goswami](https://www.linkedin.com/in/pranavgoswami1/), [Rohit Goswami](https://rgoswami.me), [Dominic Poerio](https://github.com/dpoerio), [Akshānsh Bhatt](https://github.com/akshanshbhatt), [Virendra Kabra] (https://www.linkedin.com/in/virendrakabra/)"
 type: post
 draft: false
 ---
@@ -718,6 +718,8 @@ We compare JIT compilation of LPython to Numba on **summation of all the element
 | Python | 3.10.4 |
 
 <br/>
+
+
 <!-- Add your systems like System - Linux, System - Windows, etc and then add the results for your System in the tables that follow -->
 
 **Summation of all the elements of a 1-D array**
@@ -779,6 +781,8 @@ test()
 
 <br/>
 
+
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | LPython | 0.013 | Apple M1 MBP 2020 | 1.00 |
@@ -791,6 +795,8 @@ test()
 | Numba | 0.048 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 **Pointwise multiplication of two 1-D arrays**
@@ -846,6 +852,8 @@ test()
 
 <br/>
 
+
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | Numba | 0.041 | Apple M1 MBP 2020 | 1.00 |
@@ -858,6 +866,8 @@ test()
 | LPython | 0.21 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 **Insertion sort on lists**
@@ -929,6 +939,8 @@ test()
 
 <br/>
 
+
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | LPython | 0.11 | Apple M1 MBP 2020 | 1.00 |
@@ -941,6 +953,8 @@ test()
 | Numba | 0.36 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 3.60 |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 **Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph**
@@ -1065,6 +1079,8 @@ test()
 
 <br/>
 
+
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | LPython | 0.23 | Apple M1 MBP 2020 | 1.00 |
@@ -1077,6 +1093,8 @@ test()
 | Numba | 1.95 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 2.24 |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 ### Ahead-of-Time (AoT) Compilation
@@ -1094,6 +1112,8 @@ Next, we see how LPython compares to other AoT compilers and to the standard CPy
 | Python | 3.10.4 |
 
 <br/>
+
+
 
 **Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph**
 
@@ -1235,6 +1255,8 @@ int main() {
 
 <br/>
 
+
+
 Note the optimization flags furnished to each compiler.
 
 | Compiler/Interpreter | Optimization flags used |
@@ -1245,6 +1267,8 @@ Note the optimization flags furnished to each compiler.
 | Python | - |
 
 <br/>
+
+
 
 <!-- TODO: Write a summary of the results -->
 
@@ -1347,6 +1371,8 @@ int main() {
 | Python | 440.588 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 633.94 |
 
 <br/>
+
+
 <!-- TODO: Remove above line if the following table looks good.-->
 
 Note the optimization flags furnished to each compiler.
@@ -1359,6 +1385,8 @@ Note the optimization flags furnished to each compiler.
 | Python | - |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 ### Interoperability with CPython
@@ -1599,6 +1627,6 @@ Done.
 
 ## Conclusion
 
-The benchmarks support the claim that LPython is competitive with its competitors in all features it offers. In JIT, the execution times of LPython-compiled functions are at least as short as equivalent Numba functions.The speed of JIT compilation, itself, is slow in some cases because it depends on a C compiler to generate optimal binary code. For algorithms with rich data structures like `dict` (hash maps) and `list`, LPython shows much faster speed than Numba. In AoT compilation for tasks like the Dijkstra algorithm, LPython beats equivalent C++ code very comfortably. For an array-based implementation of the Floyd-Warshall algorithm, LPython generates code almost as fast as doess C++.
+The benchmarks support the claim that LPython is competitive with its competitors in all features it offers. In JIT, the execution times of LPython-compiled functions are at least as short as equivalent Numba functions.The speed of JIT compilation, itself, is slow in some cases because it depends on a C compiler to generate optimal binary code. For algorithms with rich data structures like `dict` (hash maps) and `list`, LPython shows much faster speed than Numba. In AoT compilation for tasks like the Dijkstra algorithm, LPython beats equivalent C++ code very comfortably. For an array-based implementation of the Floyd-Warshall algorithm, LPython generates code almost as fast as C++ does.
 
 The main takeaway is that LPython/LFortran generate fast code by default. Our benchmarks show that it's straightforward to write high-speed LPython code. We hope to raise expectations that LPython output will be in general at least as fast as the equivalent C++ code. Users love Python because of its many productivity advantages: great tooling, easy syntax, and rich data structures like lists, dicts, sets, and arrays. Because any LPython program is also an ordinary Python program, all the tools -- debuggers and profilers, for instance -- just work. Then, LPython delivers run-time speeds, even with rich data structures at least as short as alternatives in most cases. In the future, LPython will allow user-defined implementations of data structures for those rare cases where the versions shipped with LPython are not good enough.
