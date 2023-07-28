@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>LPYthon</title>
+    <title>LPython</title>
     <link>https://lpython.org/</link>
-    <description>Recent content on LPYthon</description>
+    <description>Recent content on LPython</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 28 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://lpython.org/index.xml" rel="self" type="application/rss+xml" />
