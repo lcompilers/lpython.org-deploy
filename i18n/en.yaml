@@ -1,0 +1,7 @@
+# 404 page
+- id: pageNotFound
+  translation: "This page doesn't exist. (404 error)"
+
+# Footer
+- id: poweredBy # Accepts HTML
+  translation: ' '
