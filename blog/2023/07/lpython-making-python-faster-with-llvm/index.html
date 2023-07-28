@@ -72,7 +72,7 @@ Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, 
   "headline": "LPython: Making Python faster with LLVM",
   "description" : "About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C\u002b\u002b, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.\nBased on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython\u0026rsquo;s intermediate optimizations are independent of the backends and frontends.",
   "inLanguage" : "en",
-  "wordCount":  4341 ,
+  "wordCount":  4321 ,
   "datePublished" : "2023-07-28T00:00:00",
   "dateModified" : "2023-07-28T00:00:00",
   "image" : "https:\/\/lpython.org\/",
@@ -291,7 +291,7 @@ h2.h2heading {
     &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;21&nbsp;minutes
   
   
-    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;4341&nbsp;words
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;4321&nbsp;words
   
   
     &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;<a href="https://ondrejcertik.com/">Ondřej Čertík</a>, <a href="https://www.linkedin.com/in/brianbeckman">Brian Beckman</a>, <a href="https://github.com/czgdp1807">Gagandeep Singh</a>, <a href="https://www.linkedin.com/in/thirumalai-shaktivel/">Thirumalai Shaktivel</a>, <a href="https://rgoswami.me">Rohit Goswami</a>, <a href="https://www.linkedin.com/in/smit-lunagariya-356b93179/">Smit Lunagariya</a>, <a href="https://Shaikh-Ubaid.github.io/">Ubaid Shaikh</a>, <a href="https://www.linkedin.com/in/pranavgoswami1/">Pranav Goswami</a>
@@ -349,7 +349,7 @@ h2.h2heading {
 <li>Transforming division to multiplication operation</li>
 <li>Fused multiplication and addition</li>
 </ol>
-<p>All optimizations are applied via one command-line argument, &ndash;fast. To select individual optimizations instead, write a command-line argument like the following:</p>
+<p>All optimizations are applied via one command-line argument, <code>--fast</code>. To select individual optimizations instead, write a command-line argument like the following:</p>
 <p><code>--pass=inline_function_calls,loop_unroll</code></p>
 <!-- raw HTML omitted -->
 <h3 id="ahead-of-time-aot-compilation">Ahead-of-Time (AoT) compilation</h3>
@@ -375,17 +375,17 @@ h2.h2heading {
 </span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 18:58:31:~/lpython_project/lpython % time ./a.out
 </span></span><span style="display:flex;"><span><span style="color:#ae81ff">124999750000</span>
 </span></span><span style="display:flex;"><span>./a.out  0.01s user 0.00s system 89% cpu 0.012 total
-</span></span></code></pre></div><p>You can see that it&rsquo;s very fast. It&rsquo;s still plenty fast with the C backend via the command-line argument &ndash;backend=c:</p>
+</span></span></code></pre></div><p>You can see that it&rsquo;s very fast. It&rsquo;s still plenty fast with the C backend via the command-line argument <code>--backend=c</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span>% time lpython /Users/czgdp1807/lpython_project/debug.py --backend<span style="color:#f92672">=</span>c
 </span></span><span style="display:flex;"><span><span style="color:#ae81ff">124999750000</span>
 </span></span><span style="display:flex;"><span>lpython /Users/czgdp1807/lpython_project/debug.py --backend<span style="color:#f92672">=</span>c  0.12s user 0.02s system 100% cpu 0.144 total
 </span></span></code></pre></div><p>Note that time lpython <code>/Users/czgdp1807/lpython_project/debug.py --backend=c</code> includes both the compilation time of LPython and the execution time of the binary. The sum of both is so fast that one can afford to compile on every change to the input files. :D.</p>
 <h3 id="just-in-time-compilation">Just-In-Time Compilation</h3>
-<p>Just-in-time compilation in LPython requires only decorating Python function with @lpython. The decorator takes an option for specifying the desired backend, as in, @lpython(backend=&ldquo;c&rdquo;) or @lpython(backend=&ldquo;llvm&rdquo;). Only C is supported at present; LLVM and others will be added in the near future. The decorator also propagates backend-specific options. For example</p>
+<p>Just-in-time compilation in LPython requires only decorating Python function with <code>@lpython</code>. The decorator takes an option for specifying the desired backend, as in, <code>@lpython(backend=&quot;c&quot;)</code> or <code>@lpython(backend=&quot;llvm&quot;)</code>. Only C is supported at present; LLVM and others will be added in the near future. The decorator also propagates backend-specific options. For example</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@lpython</span>(backend<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c&#34;</span>,
-</span></span><span style="display:flex;"><span>    backend_optimization_flags<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;-ffast-math&#34;</span>,
-</span></span><span style="display:flex;"><span>                                <span style="color:#e6db74">&#34;-funroll-loops&#34;</span>,
-</span></span><span style="display:flex;"><span>                                <span style="color:#e6db74">&#34;-O1&#34;</span>])
+</span></span><span style="display:flex;"><span>         backend_optimization_flags<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;-ffast-math&#34;</span>,
+</span></span><span style="display:flex;"><span>                                     <span style="color:#e6db74">&#34;-funroll-loops&#34;</span>,
+</span></span><span style="display:flex;"><span>                                     <span style="color:#e6db74">&#34;-O1&#34;</span>])
 </span></span></code></pre></div><p>Note that by default C backend is used without any optimisation flags.</p>
 <p>A small example of JIT compilation in LPython (notice the LPython type annotations with the variables),</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, i64, lpython
@@ -435,13 +435,34 @@ h2.h2heading {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> email_matches[<span style="color:#ae81ff">0</span>]
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 18:54:13:~/lpython_project % lpython email_extractor.py --backend<span style="color:#f92672">=</span>c --enable-cpython
 </span></span><span style="display:flex;"><span>lpython@lcompilers.org
-</span></span></code></pre></div><p>Note: The <code>@pythoncall</code> and <code>@lpython</code> decorators are presently supported with just the <code>C</code> backend but eventually will work with the LLVM backend and that&rsquo;s work in progress.</p>
+</span></span></code></pre></div><p><em>Note</em>: The <code>@pythoncall</code> and <code>@lpython</code> decorators are presently supported with just the <code>C</code> backend but eventually will work with the LLVM backend and that&rsquo;s work in progress.</p>
 <h2 id="benchmarks-and-demos">Benchmarks and Demos</h2>
 <p>In this section, we show how LPython performs compares to competitors on each feature LPython offers. We cover JIT compilation, Interoperability with CPython, and AoT compilation.</p>
 <h3 id="just-in-time-jit-compilation">Just-In-Time (JIT) Compilation</h3>
 <p>We compare JIT compilation of LPython to Numba on <strong>summation of all the elements of a 1-D array</strong>, <strong>pointwise multiplication of two 1-D arrays</strong>, <strong>insertion sort on lists</strong>, and <strong>quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph</strong>.</p>
 <p><strong>System Information</strong></p>
-<p>Softwares - The numba version used is <code>numba-0.57.1</code>, LPython commit is <code>a39430386a0e7ea5de2f569e27229017dff78330</code> and Python version is <code>Python 3.10.4</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Numba</td>
+<td>0.57.1</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.19.0</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.10.4</td>
+</tr>
+</tbody>
+</table>
 <!-- raw HTML omitted -->
 <p><strong>Summation of all the elements of a 1-D array</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> float64, arange, empty
@@ -545,6 +566,7 @@ h2.h2heading {
 </tr>
 </tbody>
 </table>
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -702,6 +724,7 @@ h2.h2heading {
 </tr>
 </tbody>
 </table>
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -875,6 +898,7 @@ h2.h2heading {
 </tr>
 </tbody>
 </table>
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -1101,6 +1125,7 @@ h2.h2heading {
 </tr>
 </tbody>
 </table>
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -1165,7 +1190,33 @@ h2.h2heading {
 <h3 id="ahead-of-time-aot-compilation-1">Ahead-of-Time (AoT) Compilation</h3>
 <p>Next, we see how LPython compares to other AoT compilers and to the standard CPython interpreter. The tasks considered are <strong>quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph</strong>, and <strong>Floyd-Warshall algorithm on array representation of graphs</strong>.</p>
 <p><strong>System Information</strong></p>
-<p>The Clang++ version used is <code>14.0.3</code>, <code>g++</code> version is <code>11.3.0</code>, LPython commit is <code>a39430386a0e7ea5de2f569e27229017dff78330</code> and Python version is <code>Python 3.10.4</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clang++</td>
+<td>14.0.3</td>
+</tr>
+<tr>
+<td>g++</td>
+<td>11.3.0</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.19.0</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.10.4</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
 <p><strong>Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32
 </span></span><span style="display:flex;"><span>
@@ -1366,6 +1417,7 @@ h2.h2heading {
 </tr>
 </tbody>
 </table>
+<!-- raw HTML omitted -->
 <p>Note the optimization flags furnished to each compiler.</p>
 <table>
 <thead>
@@ -1393,6 +1445,7 @@ h2.h2heading {
 </tr>
 </tbody>
 </table>
+<!-- raw HTML omitted -->
 <!-- raw HTML omitted -->
 <p><strong>Floyd-Warshall algorithm on array representation of graphs</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i64, i32
