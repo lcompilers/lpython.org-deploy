@@ -207,6 +207,8 @@ We compare JIT compilation of LPython to Numba on **summation of all the element
 | Python | 3.10.4 |
 
 <br/>
+
+
 <!-- Add your systems like System - Linux, System - Windows, etc and then add the results for your System in the tables that follow -->
 
 **Summation of all the elements of a 1-D array**
@@ -268,6 +270,8 @@ test()
 
 <br/>
 
+
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | LPython | 0.013 | Apple M1 MBP 2020 | 1.00 |
@@ -280,6 +284,8 @@ test()
 | Numba | 0.048 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 **Pointwise multiplication of two 1-D arrays**
@@ -335,6 +341,8 @@ test()
 
 <br/>
 
+
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | Numba | 0.041 | Apple M1 MBP 2020 | 1.00 |
@@ -347,6 +355,8 @@ test()
 | LPython | 0.21 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 **Insertion sort on lists**
@@ -418,6 +428,8 @@ test()
 
 <br/>
 
+
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | LPython | 0.11 | Apple M1 MBP 2020 | 1.00 |
@@ -430,6 +442,8 @@ test()
 | Numba | 0.36 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 3.60 |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 **Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph**
@@ -554,6 +568,8 @@ test()
 
 <br/>
 
+
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | LPython | 0.23 | Apple M1 MBP 2020 | 1.00 |
@@ -566,6 +582,8 @@ test()
 | Numba | 1.95 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 2.24 |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 ### Ahead-of-Time (AoT) Compilation
@@ -583,6 +601,8 @@ Next, we see how LPython compares to other AoT compilers and to the standard CPy
 | Python | 3.10.4 |
 
 <br/>
+
+
 
 **Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph**
 
@@ -724,6 +744,8 @@ int main() {
 
 <br/>
 
+
+
 Note the optimization flags furnished to each compiler.
 
 | Compiler/Interpreter | Optimization flags used |
@@ -734,6 +756,8 @@ Note the optimization flags furnished to each compiler.
 | Python | - |
 
 <br/>
+
+
 
 <!-- TODO: Write a summary of the results -->
 
@@ -836,6 +860,8 @@ int main() {
 | Python | 440.588 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 633.94 |
 
 <br/>
+
+
 <!-- TODO: Remove above line if the following table looks good.-->
 
 Note the optimization flags furnished to each compiler.
@@ -848,6 +874,8 @@ Note the optimization flags furnished to each compiler.
 | Python | - |
 
 <br/>
+
+
 <!-- TODO: Write a summary of the results -->
 
 ### Interoperability with CPython
