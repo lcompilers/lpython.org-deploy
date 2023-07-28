@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '');
+</script>
+
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>LPython: Making Python faster with LLVM - </title>
+
+  <meta name="description" content="About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C&#43;&#43;, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.
+Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython&rsquo;s intermediate optimizations are independent of the backends and frontends."><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "LPYthon",
+    
+    "url": "https:\/\/lpython.org\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/lpython.org\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/lpython.org\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/lpython.org\/blog\/2023\/07\/lpython-making-python-faster-with-llvm\/",
+          "name": "Lpython making python faster with llvm"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "[Ondřej Čertík](https:\/\/ondrejcertik.com\/), [Brian Beckman](https:\/\/www.linkedin.com\/in\/brianbeckman), [Gagandeep Singh](https:\/\/github.com\/czgdp1807), [Thirumalai Shaktivel](https:\/\/www.linkedin.com\/in\/thirumalai-shaktivel\/), [Rohit Goswami](https:\/\/rgoswami.me), [Smit Lunagariya](https:\/\/www.linkedin.com\/in\/smit-lunagariya-356b93179\/), [Ubaid Shaikh](https:\/\/Shaikh-Ubaid.github.io\/), [Pranav Goswami](https:\/\/www.linkedin.com\/in\/pranavgoswami1\/)"
+  },
+  "headline": "LPython: Making Python faster with LLVM",
+  "description" : "About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C\u002b\u002b, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.\nBased on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython\u0026rsquo;s intermediate optimizations are independent of the backends and frontends.",
+  "inLanguage" : "en",
+  "wordCount":  4341 ,
+  "datePublished" : "2023-07-28T00:00:00",
+  "dateModified" : "2023-07-28T00:00:00",
+  "image" : "https:\/\/lpython.org\/",
+  "keywords" : [ "Python, Announcement" ],
+  "mainEntityOfPage" : "https:\/\/lpython.org\/blog\/2023\/07\/lpython-making-python-faster-with-llvm\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/lpython.org\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/lpython.org\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="LPython: Making Python faster with LLVM" />
+<meta property="og:description" content="About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C&#43;&#43;, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.
+Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython&rsquo;s intermediate optimizations are independent of the backends and frontends.">
+<meta property="og:url" content="https://lpython.org/blog/2023/07/lpython-making-python-faster-with-llvm/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="LPYthon" />
+
+  <meta name="twitter:title" content="LPython: Making Python faster with LLVM" />
+  <meta name="twitter:description" content="About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C&#43;&#43;, WASM, Julia and x86. LPython features …">
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="generator" content="Hugo 0.115.4">
+  <link rel="alternate" href="https://lpython.org/index.xml" type="application/rss+xml" title="LPYthon"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://lpython.org/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://lpython.org/css/syntax.css" /><link rel="stylesheet" href="https://lpython.org/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+
+
+<style>
+h2 {
+    font-size: 20px;
+}
+p, li {
+    text-align: justify;
+}
+img {
+    display: inline;
+}
+h1.h1heading {
+    text-align: center;
+}
+h2.h2heading {
+    text-align: center;
+    font-size: 20px;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    margin: 0 0 0;
+}
+#benefit i {
+    margin-right: 20px;
+}
+#benefit {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+#benefits {
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+.post-heading .post-meta a {
+  color: #008AFF;
+}
+.post-heading .post-meta a:hover, a:focus {
+  color: #0085a1;
+  text-decoration: underline;
+}
+
+[data-toggle="collapse"].collapsed .if-not-collapsed {
+  display: none;
+}
+[data-toggle="collapse"]:not(.collapsed) .if-collapsed {
+  display: none;
+}
+</style>
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://lpython.org/">LPYthon</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Download" href="/download/">Download</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Documentation" href="https://docs.lfortran.org/">Documentation</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Blog" href="/blog/">Blog</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>LPython: Making Python faster with LLVM</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on July 28, 2023
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;21&nbsp;minutes
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;4341&nbsp;words
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;<a href="https://ondrejcertik.com/">Ondřej Čertík</a>, <a href="https://www.linkedin.com/in/brianbeckman">Brian Beckman</a>, <a href="https://github.com/czgdp1807">Gagandeep Singh</a>, <a href="https://www.linkedin.com/in/thirumalai-shaktivel/">Thirumalai Shaktivel</a>, <a href="https://rgoswami.me">Rohit Goswami</a>, <a href="https://www.linkedin.com/in/smit-lunagariya-356b93179/">Smit Lunagariya</a>, <a href="https://Shaikh-Ubaid.github.io/">Ubaid Shaikh</a>, <a href="https://www.linkedin.com/in/pranavgoswami1/">Pranav Goswami</a>
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="about">About</h2>
+<p>LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C++, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.</p>
+<p>Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython&rsquo;s intermediate optimizations are independent of the backends and frontends. The two compilers, LPython and LFortran, share all benefits of improvements at the ASR level. &ldquo;Speed&rdquo; is the chief tenet of the LPython project. Our objective is to produce a compiler that both runs exceptionally fast and generates exceptionally fast code.</p>
+<p>In this blog, we describe features of LPython including Ahead-of-Time (AoT) compilation, JIT compilation, and interoperability with CPython. We also showcase LPython&rsquo;s performance against its competitors such as Numba and C++ via several benchmarks.</p>
+<p><img src="https://hackmd.io/_uploads/rJFejQpc3.png" alt="LCompilers-Diagram"></p>
+<h2 id="features-of-lpython">Features of LPython</h2>
+<h3 id="backends">Backends</h3>
+<p>LPython ships with the following backends, which emit final translations of the user&rsquo;s input code:</p>
+<ol>
+<li>LLVM</li>
+<li>C</li>
+<li>C++</li>
+<li>WASM</li>
+</ol>
+<p>LPython can simultaneously generate code into multiple backends from its Abstract Semantic Representation (ASR) of user code.</p>
+<h3 id="phases-of-compilation">Phases of Compilation</h3>
+<p>First, input code is transformed into an Abstract Syntax Tree (AST) using parsers. The AST is then transformed into an Abstract Semantic Representation (ASR), which preserves all semantic information present in the input code. ASR contains all information required by all backends in a form that is not specific to any particular backend. Then, this ASR enjoys several ASR-to-ASR passes, wherein abstract operations are transformed into concrete statements. For example, array addition in the input code denoted, <code>c = a + b</code>. The front end transforms <code>c = a + b</code> into the ASR <code>(Assign c (ArrayAdd a b))</code> via operator overloading. The <em>array_op</em> ASR-to-ASR pass transforms <code>(Assign c (ArrayAdd a b))</code> into loops:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i0 <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, length_dim_0):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i1 <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, length_dim_1):
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">....</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">....</span>
+</span></span><span style="display:flex;"><span>            c[i0, i1, <span style="color:#f92672">...</span>] <span style="color:#f92672">=</span> a[i0, i1, <span style="color:#f92672">...</span>] <span style="color:#f92672">+</span> b[i0, i1, <span style="color:#f92672">...</span>]
+</span></span></code></pre></div><p>After applying all the ASR-to-ASR passes, LPython sends the final ASR to the backends selected by the user, via command-line arguments like, <code>--show-c</code> (generates C code), <code>--show-llvm</code> (generates LLVM code).</p>
+<!-- raw HTML omitted -->
+<h3 id="machine-independent-code-optimisations">Machine Independent Code Optimisations</h3>
+<p>LPython implements several machine-independent optimisations via ASR-to-ASR passes. Some of those are listed below,</p>
+<ol>
+<li>Loop unrolling</li>
+<li>Loop vectorisation</li>
+<li>Dead code removal</li>
+<li>Function call inlining</li>
+<li>Transforming division to multiplication operation</li>
+<li>Fused multiplication and addition</li>
+</ol>
+<p>All optimizations are applied via one command-line argument, &ndash;fast. To select individual optimizations instead, write a command-line argument like the following:</p>
+<p><code>--pass=inline_function_calls,loop_unroll</code></p>
+<!-- raw HTML omitted -->
+<h3 id="ahead-of-time-aot-compilation">Ahead-of-Time (AoT) compilation</h3>
+<p>LPython naturally acts as a Python compiler. By default, if no backend is provided it compiles type-annotated user input code to LLVM, which generates binary final output. Consider the following small example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, i64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">list_bench</span>(n: i32) <span style="color:#f92672">-&gt;</span> i64:
+</span></span><span style="display:flex;"><span>    x: list[i32]
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    i: i32
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        x<span style="color:#f92672">.</span>append(i)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    s: i64 <span style="color:#f92672">=</span> i64(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">+=</span> i64(x[i])
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>res: i64 <span style="color:#f92672">=</span> list_bench(<span style="color:#ae81ff">500_000</span>)
+</span></span><span style="display:flex;"><span>print(res)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 18:58:29:~/lpython_project/lpython % lpython /Users/czgdp1807/lpython_project/debug.py -o a.out
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 18:58:31:~/lpython_project/lpython % time ./a.out
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">124999750000</span>
+</span></span><span style="display:flex;"><span>./a.out  0.01s user 0.00s system 89% cpu 0.012 total
+</span></span></code></pre></div><p>You can see that it&rsquo;s very fast. It&rsquo;s still plenty fast with the C backend via the command-line argument &ndash;backend=c:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span>% time lpython /Users/czgdp1807/lpython_project/debug.py --backend<span style="color:#f92672">=</span>c
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">124999750000</span>
+</span></span><span style="display:flex;"><span>lpython /Users/czgdp1807/lpython_project/debug.py --backend<span style="color:#f92672">=</span>c  0.12s user 0.02s system 100% cpu 0.144 total
+</span></span></code></pre></div><p>Note that time lpython <code>/Users/czgdp1807/lpython_project/debug.py --backend=c</code> includes both the compilation time of LPython and the execution time of the binary. The sum of both is so fast that one can afford to compile on every change to the input files. :D.</p>
+<h3 id="just-in-time-compilation">Just-In-Time Compilation</h3>
+<p>Just-in-time compilation in LPython requires only decorating Python function with @lpython. The decorator takes an option for specifying the desired backend, as in, @lpython(backend=&ldquo;c&rdquo;) or @lpython(backend=&ldquo;llvm&rdquo;). Only C is supported at present; LLVM and others will be added in the near future. The decorator also propagates backend-specific options. For example</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@lpython</span>(backend<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c&#34;</span>,
+</span></span><span style="display:flex;"><span>    backend_optimization_flags<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;-ffast-math&#34;</span>,
+</span></span><span style="display:flex;"><span>                                <span style="color:#e6db74">&#34;-funroll-loops&#34;</span>,
+</span></span><span style="display:flex;"><span>                                <span style="color:#e6db74">&#34;-O1&#34;</span>])
+</span></span></code></pre></div><p>Note that by default C backend is used without any optimisation flags.</p>
+<p>A small example of JIT compilation in LPython (notice the LPython type annotations with the variables),</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, i64, lpython
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@lpython</span>(backend<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c&#34;</span>, backend_optimisation_flags<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;-ffast-math&#34;</span>, <span style="color:#e6db74">&#34;-funroll-loops&#34;</span>, <span style="color:#e6db74">&#34;-O1&#34;</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">list_bench</span>(n: i32) <span style="color:#f92672">-&gt;</span> i64:
+</span></span><span style="display:flex;"><span>    x: list[i32]
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    i: i32
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        x<span style="color:#f92672">.</span>append(i)
+</span></span><span style="display:flex;"><span>    s: i64 <span style="color:#f92672">=</span> i64(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">+=</span> i64(x[i])
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>res <span style="color:#f92672">=</span> list_bench(<span style="color:#ae81ff">1</span>) <span style="color:#75715e"># compiles `list_bench` to a shared binary in the first call</span>
+</span></span><span style="display:flex;"><span>res <span style="color:#f92672">=</span> list_bench(<span style="color:#ae81ff">500_000</span>) <span style="color:#75715e"># calls the compiled `list_bench`</span>
+</span></span><span style="display:flex;"><span>print(res)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 18:46:33:~/lpython_project/lpython % python /Users/czgdp1807/lpython_project/debug.py
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">124999750000</span>
+</span></span></code></pre></div><p>We show below in the benchmarks how LPython compares to Numba, which also has JIT compilation.</p>
+<h3 id="inter-operability-with-cpython">Inter-operability with CPython</h3>
+<p>Access any library implemented using CPython, via the <code>@pythoncall</code> decorator. For example,</p>
+<p><strong>email_extractor.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># get_email is implemented in email_extractor_util.py which is intimated to</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LPython by specifiying the file as module in `@pythoncall` decorator</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@pythoncall</span>(module<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;email_extractor_util&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_email</span>(text: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>():
+</span></span><span style="display:flex;"><span>    text: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello, my email id is lpython@lcompilers.org.&#34;</span>
+</span></span><span style="display:flex;"><span>    print(get_email(text))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test()
+</span></span></code></pre></div><p><strong>email_extractor_util.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Implement `get_email` using `re` CPython library</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_email</span>(text):
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Regular expression patterns</span>
+</span></span><span style="display:flex;"><span>    email_pattern <span style="color:#f92672">=</span> <span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Matching email addresses</span>
+</span></span><span style="display:flex;"><span>    email_matches <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(email_pattern, text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> email_matches[<span style="color:#ae81ff">0</span>]
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 18:54:13:~/lpython_project % lpython email_extractor.py --backend<span style="color:#f92672">=</span>c --enable-cpython
+</span></span><span style="display:flex;"><span>lpython@lcompilers.org
+</span></span></code></pre></div><p>Note: The <code>@pythoncall</code> and <code>@lpython</code> decorators are presently supported with just the <code>C</code> backend but eventually will work with the LLVM backend and that&rsquo;s work in progress.</p>
+<h2 id="benchmarks-and-demos">Benchmarks and Demos</h2>
+<p>In this section, we show how LPython performs compares to competitors on each feature LPython offers. We cover JIT compilation, Interoperability with CPython, and AoT compilation.</p>
+<h3 id="just-in-time-jit-compilation">Just-In-Time (JIT) Compilation</h3>
+<p>We compare JIT compilation of LPython to Numba on <strong>summation of all the elements of a 1-D array</strong>, <strong>pointwise multiplication of two 1-D arrays</strong>, <strong>insertion sort on lists</strong>, and <strong>quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph</strong>.</p>
+<p><strong>System Information</strong></p>
+<p>Softwares - The numba version used is <code>numba-0.57.1</code>, LPython commit is <code>a39430386a0e7ea5de2f569e27229017dff78330</code> and Python version is <code>Python 3.10.4</code>.</p>
+<!-- raw HTML omitted -->
+<p><strong>Summation of all the elements of a 1-D array</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> float64, arange, empty
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, f64, lpython
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> timeit
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numba <span style="color:#f92672">import</span> njit
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@lpython</span>(backend<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c&#34;</span>, backend_optimisation_flags<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;-ffast-math&#34;</span>, <span style="color:#e6db74">&#34;-funroll-loops&#34;</span>, <span style="color:#e6db74">&#34;-O3&#34;</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fast_sum</span>(n: i32, x: f64[:], res: f64[:]) <span style="color:#f92672">-&gt;</span> f64:
+</span></span><span style="display:flex;"><span>    s: f64 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    res[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    i: i32
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">+=</span> x[i]
+</span></span><span style="display:flex;"><span>    res[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> s
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@njit</span>(fastmath<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fast_sum_numba</span>(n, x, res):
+</span></span><span style="display:flex;"><span>    s <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    res[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">+=</span> x[i]
+</span></span><span style="display:flex;"><span>    res[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> s
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>():
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> <span style="color:#ae81ff">100_000_000</span>
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> arange(n, dtype<span style="color:#f92672">=</span>float64)
+</span></span><span style="display:flex;"><span>    x1 <span style="color:#f92672">=</span> arange(<span style="color:#ae81ff">0</span>, dtype<span style="color:#f92672">=</span>float64)
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> empty(<span style="color:#ae81ff">1</span>, dtype<span style="color:#f92672">=</span>float64)
+</span></span><span style="display:flex;"><span>    res_numba <span style="color:#f92672">=</span> empty(<span style="color:#ae81ff">1</span>, dtype<span style="color:#f92672">=</span>float64)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;LPython compilation time:&#34;</span>, timeit<span style="color:#f92672">.</span>timeit(<span style="color:#66d9ef">lambda</span>: fast_sum(<span style="color:#ae81ff">0</span>, x1, res), number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;LPython execution time: &#34;</span>, min(timeit<span style="color:#f92672">.</span>repeat(<span style="color:#66d9ef">lambda</span>: fast_sum(n, x, res), repeat<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> res[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">4999999950000000.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Numba compilation time:&#34;</span>, timeit<span style="color:#f92672">.</span>timeit(<span style="color:#66d9ef">lambda</span>: fast_sum_numba(<span style="color:#ae81ff">0</span>, x1, res_numba), number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Numba execution time:&#34;</span>, min(timeit<span style="color:#f92672">.</span>repeat(<span style="color:#66d9ef">lambda</span>: fast_sum_numba(n, x, res_numba), repeat<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> res_numba[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">4999999950000000.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test()
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Compilation Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Numba</td>
+<td>0.10</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.20</td>
+<td>Apple M1 MBP 2020</td>
+<td>2.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.08</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.53</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>6.62</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.15</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.40</td>
+<td>Apple M1 2020</td>
+<td>2.67</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.20</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.32</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.60</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Execution Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LPython</td>
+<td>0.013</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.024</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.84</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.013</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.023</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.77</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.014</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.024</td>
+<td>Apple M1 2020</td>
+<td>1.71</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.048</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.048</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<p><strong>Pointwise multiplication of two 1-D arrays</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> int64, arange, empty
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, i64, lpython
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> timeit
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numba <span style="color:#f92672">import</span> njit
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@lpython</span>(backend<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c&#34;</span>, backend_optimisation_flags<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;-ffast-math&#34;</span>, <span style="color:#e6db74">&#34;-funroll-loops&#34;</span>, <span style="color:#e6db74">&#34;-O3&#34;</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">multiply_arrays</span>(n: i32, x: i64[:], y: i64[:], z: i64[:]):
+</span></span><span style="display:flex;"><span>    i: i32
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        z[i] <span style="color:#f92672">=</span> x[i] <span style="color:#f92672">*</span> y[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@njit</span>(fastmath<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">multiply_arrays_numba</span>(n, x, y, z):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        z[i] <span style="color:#f92672">=</span> x[i] <span style="color:#f92672">*</span> y[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>():
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> <span style="color:#ae81ff">100_000_000</span>
+</span></span><span style="display:flex;"><span>    x1 <span style="color:#f92672">=</span> arange(<span style="color:#ae81ff">0</span>, dtype<span style="color:#f92672">=</span>int64)
+</span></span><span style="display:flex;"><span>    y1 <span style="color:#f92672">=</span> arange(<span style="color:#ae81ff">0</span>, dtype<span style="color:#f92672">=</span>int64)
+</span></span><span style="display:flex;"><span>    res1 <span style="color:#f92672">=</span> arange(<span style="color:#ae81ff">0</span>, dtype<span style="color:#f92672">=</span>int64)
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> arange(n, dtype<span style="color:#f92672">=</span>int64)
+</span></span><span style="display:flex;"><span>    y <span style="color:#f92672">=</span> arange(n, dtype<span style="color:#f92672">=</span>int64) <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> empty(n, dtype<span style="color:#f92672">=</span>int64)
+</span></span><span style="display:flex;"><span>    res_numba <span style="color:#f92672">=</span> empty(n, dtype<span style="color:#f92672">=</span>int64)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;LPython compilation time:&#34;</span>, timeit<span style="color:#f92672">.</span>timeit(<span style="color:#66d9ef">lambda</span>: multiply_arrays(<span style="color:#ae81ff">0</span>, x1, y1, res1), number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;LPython execution time:&#34;</span>, min(timeit<span style="color:#f92672">.</span>repeat(<span style="color:#66d9ef">lambda</span>: multiply_arrays(n, x, y, res), repeat<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> sum(res <span style="color:#f92672">-</span> x <span style="color:#f92672">*</span> y) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Numba compilation time:&#34;</span>, timeit<span style="color:#f92672">.</span>timeit(<span style="color:#66d9ef">lambda</span>: multiply_arrays_numba(<span style="color:#ae81ff">0</span>, x1, y1, res1), number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Numba execution time:&#34;</span>, min(timeit<span style="color:#f92672">.</span>repeat(<span style="color:#66d9ef">lambda</span>: multiply_arrays_numba(n, x, y, res_numba), repeat<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> sum(res_numba <span style="color:#f92672">-</span> x <span style="color:#f92672">*</span> y) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test()
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Compilation Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Numba</td>
+<td>0.11</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.50</td>
+<td>Apple M1 MBP 2020</td>
+<td>4.54</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.09</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.60</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>6.67</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.11</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.46</td>
+<td>Apple M1 2020</td>
+<td>4.18</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.21</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.31</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.48</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Execution Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Numba</td>
+<td>0.041</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.042</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.02</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.037</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.040</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.08</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.042</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.042</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.21</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.21</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<p><strong>Insertion sort on lists</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, lpython
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> timeit
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numba <span style="color:#f92672">import</span> njit
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@lpython</span>(backend<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c&#34;</span>, backend_optimisation_flags<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;-ffast-math&#34;</span>, <span style="color:#e6db74">&#34;-funroll-loops&#34;</span>, <span style="color:#e6db74">&#34;-O3&#34;</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_list_sort</span>(size: i32):
+</span></span><span style="display:flex;"><span>    i: i32
+</span></span><span style="display:flex;"><span>    x: list[i32]
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>        x<span style="color:#f92672">.</span>append(size <span style="color:#f92672">-</span> i)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, size):
+</span></span><span style="display:flex;"><span>        key: i32 <span style="color:#f92672">=</span> x[i]
+</span></span><span style="display:flex;"><span>        j: i32 <span style="color:#f92672">=</span> i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> j <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> key <span style="color:#f92672">&lt;</span> x[j] :
+</span></span><span style="display:flex;"><span>            x[j <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> x[j]
+</span></span><span style="display:flex;"><span>            j <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        x[j <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> key
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, size):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assert</span> x[i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;</span> x[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@njit</span>(fastmath<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_list_sort_numba</span>(size):
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>        x<span style="color:#f92672">.</span>append(size <span style="color:#f92672">-</span> i)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, size):
+</span></span><span style="display:flex;"><span>        key <span style="color:#f92672">=</span> x[i]
+</span></span><span style="display:flex;"><span>        j <span style="color:#f92672">=</span> i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> j <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> key <span style="color:#f92672">&lt;</span> x[j] :
+</span></span><span style="display:flex;"><span>            x[j <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> x[j]
+</span></span><span style="display:flex;"><span>            j <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        x[j <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> key
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, size):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assert</span> x[i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;</span> x[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>():
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> <span style="color:#ae81ff">25000</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;LPython compilation time:&#34;</span>, timeit<span style="color:#f92672">.</span>timeit(<span style="color:#66d9ef">lambda</span>: test_list_sort(<span style="color:#ae81ff">0</span>), number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;LPython execution time:&#34;</span>, min(timeit<span style="color:#f92672">.</span>repeat(<span style="color:#66d9ef">lambda</span>: test_list_sort(n), repeat<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Numba compilation time:&#34;</span>, timeit<span style="color:#f92672">.</span>timeit(<span style="color:#66d9ef">lambda</span>: test_list_sort_numba(<span style="color:#ae81ff">0</span>), number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Numba execution time:&#34;</span>, min(timeit<span style="color:#f92672">.</span>repeat(<span style="color:#66d9ef">lambda</span>: test_list_sort_numba(n), repeat<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test()
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Compilation Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Numba</td>
+<td>0.13</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.20</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.54</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.13</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.60</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>4.62</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.13</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.42</td>
+<td>Apple M1 2020</td>
+<td>3.23</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.35</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.37</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.06</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Execution Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LPython</td>
+<td>0.11</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.39</td>
+<td>Apple M1 MBP 2020</td>
+<td>3.54</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.11</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.39</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>3.54</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.20</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.39</td>
+<td>Apple M1 2020</td>
+<td>1.95</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.10</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.36</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>3.60</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<p><strong>Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, lpython
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> empty, int32
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numba <span style="color:#f92672">import</span> njit
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> timeit
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@lpython</span>(backend<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c&#34;</span>, backend_optimisation_flags<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;-ffast-math&#34;</span>, <span style="color:#e6db74">&#34;-funroll-loops&#34;</span>, <span style="color:#e6db74">&#34;-O1&#34;</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dijkstra_shortest_path</span>(n: i32, source: i32, dist_sum: i32[:]):
+</span></span><span style="display:flex;"><span>    i: i32; j: i32; v: i32; u: i32; mindist: i32; alt: i32; dummy: i32;
+</span></span><span style="display:flex;"><span>    graph: dict[i32, i32] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    dist: dict[i32, i32] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    prev: dict[i32, i32] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    visited: dict[i32, bool] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    Q: list[i32] <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>            graph[n <span style="color:#f92672">*</span> i <span style="color:#f92672">+</span> j] <span style="color:#f92672">=</span> abs(i <span style="color:#f92672">-</span> j)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        dist[v] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2147483647</span>
+</span></span><span style="display:flex;"><span>        prev[v] <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        Q<span style="color:#f92672">.</span>append(v)
+</span></span><span style="display:flex;"><span>        visited[v] <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    dist[source] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> len(Q) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        u <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        mindist <span style="color:#f92672">=</span> <span style="color:#ae81ff">2147483647</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(Q)):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> mindist <span style="color:#f92672">&gt;</span> dist[Q[i]]:
+</span></span><span style="display:flex;"><span>                mindist <span style="color:#f92672">=</span> dist[Q[i]]
+</span></span><span style="display:flex;"><span>                u <span style="color:#f92672">=</span> Q[i]
+</span></span><span style="display:flex;"><span>        Q<span style="color:#f92672">.</span>remove(u)
+</span></span><span style="display:flex;"><span>        visited[u] <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> v <span style="color:#f92672">!=</span> u <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> visited[v]:
+</span></span><span style="display:flex;"><span>                alt <span style="color:#f92672">=</span> dist[u] <span style="color:#f92672">+</span> graph[n <span style="color:#f92672">*</span> u <span style="color:#f92672">+</span> v]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> alt <span style="color:#f92672">&lt;</span> dist[v]:
+</span></span><span style="display:flex;"><span>                    dist[v] <span style="color:#f92672">=</span> alt
+</span></span><span style="display:flex;"><span>                    prev[v] <span style="color:#f92672">=</span> u
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    dist_sum[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        dist_sum[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+=</span> dist[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@njit</span>(fastmath<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dijkstra_shortest_path_numba</span>(n, source, dist_sum):
+</span></span><span style="display:flex;"><span>    graph <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    dist <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    prev <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    visited <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    Q <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>            graph[n <span style="color:#f92672">*</span> i <span style="color:#f92672">+</span> j] <span style="color:#f92672">=</span> abs(i <span style="color:#f92672">-</span> j)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        dist[v] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2147483647</span>
+</span></span><span style="display:flex;"><span>        prev[v] <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        Q<span style="color:#f92672">.</span>append(v)
+</span></span><span style="display:flex;"><span>        visited[v] <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    dist[source] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> len(Q) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        u <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        mindist <span style="color:#f92672">=</span> <span style="color:#ae81ff">2147483647</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(Q)):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> mindist <span style="color:#f92672">&gt;</span> dist[Q[i]]:
+</span></span><span style="display:flex;"><span>                mindist <span style="color:#f92672">=</span> dist[Q[i]]
+</span></span><span style="display:flex;"><span>                u <span style="color:#f92672">=</span> Q[i]
+</span></span><span style="display:flex;"><span>        Q<span style="color:#f92672">.</span>remove(u)
+</span></span><span style="display:flex;"><span>        visited[u] <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> v <span style="color:#f92672">!=</span> u <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> visited[v]:
+</span></span><span style="display:flex;"><span>                alt <span style="color:#f92672">=</span> dist[u] <span style="color:#f92672">+</span> graph[n <span style="color:#f92672">*</span> u <span style="color:#f92672">+</span> v]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> alt <span style="color:#f92672">&lt;</span> dist[v]:
+</span></span><span style="display:flex;"><span>                    dist[v] <span style="color:#f92672">=</span> alt
+</span></span><span style="display:flex;"><span>                    prev[v] <span style="color:#f92672">=</span> u
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    dist_sum[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        dist_sum[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+=</span> dist[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>():
+</span></span><span style="display:flex;"><span>    n: i32 <span style="color:#f92672">=</span> <span style="color:#ae81ff">4000</span>
+</span></span><span style="display:flex;"><span>    dist_sum_array_numba <span style="color:#f92672">=</span> empty(<span style="color:#ae81ff">1</span>, dtype<span style="color:#f92672">=</span>int32)
+</span></span><span style="display:flex;"><span>    dist_sum_array <span style="color:#f92672">=</span> empty(<span style="color:#ae81ff">1</span>, dtype<span style="color:#f92672">=</span>int32)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;LPython compilation time: &#34;</span>, timeit<span style="color:#f92672">.</span>timeit(<span style="color:#66d9ef">lambda</span>: dijkstra_shortest_path(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, dist_sum_array), number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;LPython execution time: &#34;</span>, min(timeit<span style="color:#f92672">.</span>repeat(<span style="color:#66d9ef">lambda</span>: dijkstra_shortest_path(n, <span style="color:#ae81ff">0</span>, dist_sum_array), repeat<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>, number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>    print(dist_sum_array[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> dist_sum_array[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> i32(n <span style="color:#f92672">*</span> (n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Numba compilation time: &#34;</span>, timeit<span style="color:#f92672">.</span>timeit(<span style="color:#66d9ef">lambda</span>: dijkstra_shortest_path_numba(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, dist_sum_array_numba), number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Numba execution time: &#34;</span>, min(timeit<span style="color:#f92672">.</span>repeat(<span style="color:#66d9ef">lambda</span>: dijkstra_shortest_path_numba(n, <span style="color:#ae81ff">0</span>, dist_sum_array_numba), repeat<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>, number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>    print(dist_sum_array_numba[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> dist_sum_array_numba[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> i32(n <span style="color:#f92672">*</span> (n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test()
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Compilation Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LPython</td>
+<td>0.35</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.81</td>
+<td>Apple M1 MBP 2020</td>
+<td>2.31</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.69</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.73</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.05</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.21</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.73</td>
+<td>Apple M1 2020</td>
+<td>3.47</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>1.08</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>1.69</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.56</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>Execution Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LPython</td>
+<td>0.23</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>1.01</td>
+<td>Apple M1 MBP 2020</td>
+<td>4.39</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.20</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.98</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>4.90</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.27</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>0.98</td>
+<td>Apple M1 2020</td>
+<td>3.63</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.87</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Numba</td>
+<td>1.95</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>2.24</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<h3 id="ahead-of-time-aot-compilation-1">Ahead-of-Time (AoT) Compilation</h3>
+<p>Next, we see how LPython compares to other AoT compilers and to the standard CPython interpreter. The tasks considered are <strong>quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph</strong>, and <strong>Floyd-Warshall algorithm on array representation of graphs</strong>.</p>
+<p><strong>System Information</strong></p>
+<p>The Clang++ version used is <code>14.0.3</code>, <code>g++</code> version is <code>11.3.0</code>, LPython commit is <code>a39430386a0e7ea5de2f569e27229017dff78330</code> and Python version is <code>Python 3.10.4</code>.</p>
+<p><strong>Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dijkstra_shortest_path</span>(n: i32, source: i32) <span style="color:#f92672">-&gt;</span> i32:
+</span></span><span style="display:flex;"><span>    i: i32; j: i32; v: i32; u: i32; mindist: i32; alt: i32; dummy: i32; uidx: i32
+</span></span><span style="display:flex;"><span>    dist_sum: i32;
+</span></span><span style="display:flex;"><span>    graph: dict[i32, i32] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    dist: dict[i32, i32] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    prev: dict[i32, i32] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    visited: dict[i32, bool] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    Q: list[i32] <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>            graph[n <span style="color:#f92672">*</span> i <span style="color:#f92672">+</span> j] <span style="color:#f92672">=</span> abs(i <span style="color:#f92672">-</span> j)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        dist[v] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2147483647</span>
+</span></span><span style="display:flex;"><span>        prev[v] <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        Q<span style="color:#f92672">.</span>append(v)
+</span></span><span style="display:flex;"><span>        visited[v] <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    dist[source] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> len(Q) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        u <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        mindist <span style="color:#f92672">=</span> <span style="color:#ae81ff">2147483647</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(Q)):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> mindist <span style="color:#f92672">&gt;</span> dist[Q[i]]:
+</span></span><span style="display:flex;"><span>                mindist <span style="color:#f92672">=</span> dist[Q[i]]
+</span></span><span style="display:flex;"><span>                u <span style="color:#f92672">=</span> Q[i]
+</span></span><span style="display:flex;"><span>                uidx <span style="color:#f92672">=</span> i
+</span></span><span style="display:flex;"><span>        dummy <span style="color:#f92672">=</span> Q<span style="color:#f92672">.</span>pop(uidx)
+</span></span><span style="display:flex;"><span>        visited[u] <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> v <span style="color:#f92672">!=</span> u <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> visited[v]:
+</span></span><span style="display:flex;"><span>                alt <span style="color:#f92672">=</span> dist[u] <span style="color:#f92672">+</span> graph[n <span style="color:#f92672">*</span> u <span style="color:#f92672">+</span> v]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> alt <span style="color:#f92672">&lt;</span> dist[v]:
+</span></span><span style="display:flex;"><span>                    dist[v] <span style="color:#f92672">=</span> alt
+</span></span><span style="display:flex;"><span>                    prev[v] <span style="color:#f92672">=</span> u
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    dist_sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        dist_sum <span style="color:#f92672">+=</span> dist[i]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> dist_sum
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>():
+</span></span><span style="display:flex;"><span>    n: i32 <span style="color:#f92672">=</span> <span style="color:#ae81ff">4000</span>
+</span></span><span style="display:flex;"><span>    print(dijkstra_shortest_path(n, <span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test()
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unordered_map&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;vector&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int32_t</span> <span style="color:#a6e22e">dijkstra_shortest_path</span>(<span style="color:#66d9ef">int32_t</span> n, <span style="color:#66d9ef">int32_t</span> source) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int32_t</span> i, j, v, u, mindist, alt, dummy, uidx;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>unordered_map<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int32_t</span>, <span style="color:#66d9ef">int32_t</span><span style="color:#f92672">&gt;</span> graph, dist, prev;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>unordered_map<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int32_t</span>, <span style="color:#66d9ef">bool</span><span style="color:#f92672">&gt;</span> visited;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int32_t</span><span style="color:#f92672">&gt;</span> Q;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; j <span style="color:#f92672">&lt;</span> n; j<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            graph[n <span style="color:#f92672">*</span> i <span style="color:#f92672">+</span> j] <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>abs(i <span style="color:#f92672">-</span> j);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(v <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; v <span style="color:#f92672">&lt;</span> n; v<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        dist[v] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2147483647</span>;
+</span></span><span style="display:flex;"><span>        prev[v] <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        Q.push_back(v);
+</span></span><span style="display:flex;"><span>        visited[v] <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    dist[source] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span>(Q.size() <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        u <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        mindist <span style="color:#f92672">=</span> <span style="color:#ae81ff">2147483647</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> Q.size(); i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span>( mindist <span style="color:#f92672">&gt;</span> dist[Q[i]] ) {
+</span></span><span style="display:flex;"><span>                mindist <span style="color:#f92672">=</span> dist[Q[i]];
+</span></span><span style="display:flex;"><span>                u <span style="color:#f92672">=</span> Q[i];
+</span></span><span style="display:flex;"><span>                uidx <span style="color:#f92672">=</span> i;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        Q.erase(Q.begin() <span style="color:#f92672">+</span> uidx);
+</span></span><span style="display:flex;"><span>        visited[u] <span style="color:#f92672">=</span> true;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(v <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; v <span style="color:#f92672">&lt;</span> n; v<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span>( v <span style="color:#f92672">!=</span> u and not visited[v] ) {
+</span></span><span style="display:flex;"><span>                alt <span style="color:#f92672">=</span> dist[u] <span style="color:#f92672">+</span> graph[n <span style="color:#f92672">*</span> u <span style="color:#f92672">+</span> v];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span>( alt <span style="color:#f92672">&lt;</span> dist[v] ) {
+</span></span><span style="display:flex;"><span>                    dist[v] <span style="color:#f92672">=</span> alt;
+</span></span><span style="display:flex;"><span>                    prev[v] <span style="color:#f92672">=</span> u;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int32_t</span> dist_sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        dist_sum <span style="color:#f92672">+=</span> dist[i];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> dist_sum;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int32_t</span> n <span style="color:#f92672">=</span> <span style="color:#ae81ff">4000</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int32_t</span> dist_sum <span style="color:#f92672">=</span> dijkstra_shortest_path(n, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout<span style="color:#f92672">&lt;&lt;</span>dist_sum<span style="color:#f92672">&lt;&lt;</span>std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th>Compiler/Interpreter</th>
+<th>Execution Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LPython</td>
+<td>0.167</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Clang++</td>
+<td>0.993</td>
+<td>Apple M1 MBP 2020</td>
+<td>5.95</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.817</td>
+<td>Apple M1 MBP 2020</td>
+<td>22.86</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.155</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Clang++</td>
+<td>0.685</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>4.41</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.437</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>22.17</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.324</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>Clang++</td>
+<td>0.709</td>
+<td>Apple M1 2020</td>
+<td>2.19</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.486</td>
+<td>Apple M1 2020</td>
+<td>10.76</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.613</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>g++</td>
+<td>1.358</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>2.21</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>7.365</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>12.01</td>
+</tr>
+</tbody>
+</table>
+<p>Note the optimization flags furnished to each compiler.</p>
+<table>
+<thead>
+<tr>
+<th>Compiler/Interpreter</th>
+<th>Optimization flags used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LPython</td>
+<td><code>--fast</code></td>
+</tr>
+<tr>
+<td>Clang++</td>
+<td><code>-ffast-math -funroll-loops -O3</code></td>
+</tr>
+<tr>
+<td>g++</td>
+<td><code>-ffast-math -funroll-loops -O3</code></td>
+</tr>
+<tr>
+<td>Python</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<p><strong>Floyd-Warshall algorithm on array representation of graphs</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i64, i32
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> empty, int64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">floyd_warshall</span>(size: i32) <span style="color:#f92672">-&gt;</span> i64:
+</span></span><span style="display:flex;"><span>    dist: i64[size, size] <span style="color:#f92672">=</span> empty((size, size), dtype<span style="color:#f92672">=</span>int64)
+</span></span><span style="display:flex;"><span>    u: i32; v: i32
+</span></span><span style="display:flex;"><span>    i: i32; j: i32; k: i32
+</span></span><span style="display:flex;"><span>    update: i64 <span style="color:#f92672">=</span> i64(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> u <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>            dist[u, v] <span style="color:#f92672">=</span> i64(<span style="color:#ae81ff">2147483647</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> u <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> u <span style="color:#f92672">!=</span> v <span style="color:#f92672">and</span> ((u<span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> v<span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>                           <span style="color:#f92672">or</span> (u<span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> v<span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)):
+</span></span><span style="display:flex;"><span>                dist[u, v] <span style="color:#f92672">=</span> i64(u <span style="color:#f92672">+</span> v)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>        dist[v, v] <span style="color:#f92672">=</span> i64(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    update <span style="color:#f92672">=</span> i64(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> k <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> dist[i, j] <span style="color:#f92672">&gt;</span> dist[i, k] <span style="color:#f92672">+</span> dist[k, j]:
+</span></span><span style="display:flex;"><span>                    update <span style="color:#f92672">+=</span> dist[i, j] <span style="color:#f92672">-</span> dist[i, k] <span style="color:#f92672">-</span> dist[k, j]
+</span></span><span style="display:flex;"><span>                    dist[i, j] <span style="color:#f92672">=</span> dist[i, k] <span style="color:#f92672">+</span> dist[k, j]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> update
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(floyd_warshall(<span style="color:#ae81ff">1000</span>))
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int64_t</span> <span style="color:#a6e22e">floyd_warshall</span>(<span style="color:#66d9ef">int32_t</span> size) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int64_t</span> dist[size][size];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int32_t</span> u, v, i, j, k;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int64_t</span> update;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(u <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; u <span style="color:#f92672">&lt;</span> size; u<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(v <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; v <span style="color:#f92672">&lt;</span> size; v<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            dist[u][v] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2147483647</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(u <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; u <span style="color:#f92672">&lt;</span> size; u<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(v <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; v <span style="color:#f92672">&lt;</span> size; v<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span>( u <span style="color:#f92672">!=</span> v <span style="color:#f92672">&amp;&amp;</span> ((u<span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> and v<span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>                           <span style="color:#f92672">||</span> (u<span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> and v<span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)) ) {
+</span></span><span style="display:flex;"><span>                dist[u][v] <span style="color:#f92672">=</span> u <span style="color:#f92672">+</span> v;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(v <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; v <span style="color:#f92672">&lt;</span> size; v<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        dist[v][v] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    update <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(k <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; k <span style="color:#f92672">&lt;</span> size; k<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> size; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span>(j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; j <span style="color:#f92672">&lt;</span> size; j<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span>( dist[i][j] <span style="color:#f92672">&gt;</span> dist[i][k] <span style="color:#f92672">+</span> dist[k][j] ) {
+</span></span><span style="display:flex;"><span>                    update <span style="color:#f92672">+=</span> dist[i][j] <span style="color:#f92672">-</span> dist[i][k] <span style="color:#f92672">-</span> dist[k][j];
+</span></span><span style="display:flex;"><span>                    dist[i][j] <span style="color:#f92672">=</span> dist[i][k] <span style="color:#f92672">+</span> dist[k][j];
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> update;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout<span style="color:#f92672">&lt;&lt;</span>(floyd_warshall(<span style="color:#ae81ff">1000</span>))<span style="color:#f92672">&lt;&lt;</span>std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th>Compiler/Interpreter</th>
+<th>Execution Time (s)</th>
+<th>System</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clang++</td>
+<td>0.451</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.767</td>
+<td>Apple M1 MBP 2020</td>
+<td>1.70</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>&gt; 11</td>
+<td>Apple M1 MBP 2020</td>
+<td>&gt; 24.39</td>
+</tr>
+<tr>
+<td>Clang++</td>
+<td>0.435</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.785</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>1.80</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>&gt; 11</td>
+<td>Apple M1 Pro MBP 2021</td>
+<td>&gt; 25.28</td>
+</tr>
+<tr>
+<td>Clang++</td>
+<td>0.460</td>
+<td>Apple M1 2020</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>0.995</td>
+<td>Apple M1 2020</td>
+<td>2.16</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>&gt; 11</td>
+<td>Apple M1 2020</td>
+<td>&gt; 23.91</td>
+</tr>
+<tr>
+<td>g++</td>
+<td>0.695</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>LPython</td>
+<td>2.933</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>4.22</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>440.588</td>
+<td>AMD Ryzen 5 2500U (Ubuntu 22.04)</td>
+<td>633.94</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<p>Note the optimization flags furnished to each compiler.</p>
+<table>
+<thead>
+<tr>
+<th>Compiler/Interpreter</th>
+<th>Optimization flags used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LPython</td>
+<td><code>--fast</code></td>
+</tr>
+<tr>
+<td>Clang++</td>
+<td><code>-ffast-math -funroll-loops -O3</code></td>
+</tr>
+<tr>
+<td>g++</td>
+<td><code>-ffast-math -funroll-loops -O3</code></td>
+</tr>
+<tr>
+<td>Python</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<h3 id="interoperability-with-cpython">Interoperability with CPython</h3>
+<p>Next we show that LPython can call functions in CPython libraries. This feature permits &ldquo;break-out&rdquo; to Numpy, TensorFlow, PyTorch, and even to matplotlib. The break-outs will run at ordinary (slow) Python speeds, but LPython accelerates the mathematical portions to near maximum speed.</p>
+<p><strong>Calling NumPy functions via CPython</strong></p>
+<p><strong>main.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, f64, i64, pythoncall, Const, TypeVar
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> empty, int32, float64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>n_1 <span style="color:#f92672">=</span> TypeVar(<span style="color:#e6db74">&#34;n_1&#34;</span>)
+</span></span><span style="display:flex;"><span>n_2 <span style="color:#f92672">=</span> TypeVar(<span style="color:#e6db74">&#34;n_2&#34;</span>)
+</span></span><span style="display:flex;"><span>n_3 <span style="color:#f92672">=</span> TypeVar(<span style="color:#e6db74">&#34;n_3&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@pythoncall</span>(module <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;util&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">cpython_add</span>(n_1: i32, a: i32[:], b: i32[:]) <span style="color:#f92672">-&gt;</span> i32[n_1]:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@pythoncall</span>(module <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;util&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">cpython_multiply</span>(n_1: i32, n_2: i32, a: f64[:], b: f64[:]) <span style="color:#f92672">-&gt;</span> f64[n_1, n_2]:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_1D</span>():
+</span></span><span style="display:flex;"><span>    n: Const[i32] <span style="color:#f92672">=</span> <span style="color:#ae81ff">500_000</span>
+</span></span><span style="display:flex;"><span>    a: i32[n] <span style="color:#f92672">=</span> empty(n, dtype <span style="color:#f92672">=</span> int32)
+</span></span><span style="display:flex;"><span>    b: i32[n] <span style="color:#f92672">=</span> empty(n, dtype <span style="color:#f92672">=</span> int32)
+</span></span><span style="display:flex;"><span>    i: i32
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        a[i] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> (i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">13</span>
+</span></span><span style="display:flex;"><span>        b[i] <span style="color:#f92672">=</span> a[i] <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>    sum: i32[n]
+</span></span><span style="display:flex;"><span>    sum <span style="color:#f92672">=</span> cpython_add(<span style="color:#ae81ff">500_000</span>, a, b)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assert</span> sum[i] <span style="color:#f92672">==</span> a[i] <span style="color:#f92672">+</span> b[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_2D</span>():
+</span></span><span style="display:flex;"><span>    n: Const[i32] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1_000</span>
+</span></span><span style="display:flex;"><span>    a: f64[n] <span style="color:#f92672">=</span> empty([n], dtype <span style="color:#f92672">=</span> float64)
+</span></span><span style="display:flex;"><span>    b: f64[n] <span style="color:#f92672">=</span> empty([n], dtype <span style="color:#f92672">=</span> float64)
+</span></span><span style="display:flex;"><span>    i: i32; j: i32
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        a[i] <span style="color:#f92672">=</span> f64(i <span style="color:#f92672">+</span> <span style="color:#ae81ff">13</span>)
+</span></span><span style="display:flex;"><span>        b[i] <span style="color:#f92672">=</span> i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">/</span> (i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    product: f64[n, n]
+</span></span><span style="display:flex;"><span>    product <span style="color:#f92672">=</span> cpython_multiply(<span style="color:#ae81ff">1_000</span>, <span style="color:#ae81ff">1_000</span>, a, b)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assert</span> product[i] <span style="color:#f92672">==</span> a[i] <span style="color:#f92672">*</span> b[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>():
+</span></span><span style="display:flex;"><span>    test_1D()
+</span></span><span style="display:flex;"><span>    test_2D()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test()
+</span></span></code></pre></div><p><strong>util.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">cpython_add</span>(n, a, b):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> np<span style="color:#f92672">.</span>add(a, b)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">cpython_multiply</span>(n, m, a, b):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> np<span style="color:#f92672">.</span>multiply(a, b)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 23:02:55:~/lpython_project % lpython main.py --backend<span style="color:#f92672">=</span>c --link-numpy
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 23:03:10:~/lpython_project % <span style="color:#75715e"># Works successfully without any asserts failing</span>
+</span></span></code></pre></div><p><strong>Plotting graphs via Matplotlib</strong></p>
+<p><strong>main.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> f64, i32, pythoncall, Const
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> empty, float64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@pythoncall</span>(module <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;util&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plot_graph</span>(x: f64[:], y1: f64[:], y2: f64[:], y3: f64[:]):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">f</span>(x: f64, i: f64) <span style="color:#f92672">-&gt;</span> f64:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x <span style="color:#f92672">**</span> <span style="color:#ae81ff">.5</span> <span style="color:#f92672">/</span> i
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>():
+</span></span><span style="display:flex;"><span>    n: Const[i32] <span style="color:#f92672">=</span> <span style="color:#ae81ff">100000</span>
+</span></span><span style="display:flex;"><span>    x: f64[n] <span style="color:#f92672">=</span> empty(n, dtype<span style="color:#f92672">=</span>float64)
+</span></span><span style="display:flex;"><span>    y1: f64[n] <span style="color:#f92672">=</span> empty(n, dtype<span style="color:#f92672">=</span>float64)
+</span></span><span style="display:flex;"><span>    y2: f64[n] <span style="color:#f92672">=</span> empty(n, dtype<span style="color:#f92672">=</span>float64)
+</span></span><span style="display:flex;"><span>    y3: f64[n] <span style="color:#f92672">=</span> empty(n, dtype<span style="color:#f92672">=</span>float64)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    i: i32
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, n):
+</span></span><span style="display:flex;"><span>        x[i] <span style="color:#f92672">=</span> f64(i)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, n):
+</span></span><span style="display:flex;"><span>        y1[i] <span style="color:#f92672">=</span> f(x[i], <span style="color:#ae81ff">1.</span>)
+</span></span><span style="display:flex;"><span>        y2[i] <span style="color:#f92672">=</span> f(x[i], <span style="color:#ae81ff">2.</span>)
+</span></span><span style="display:flex;"><span>        y3[i] <span style="color:#f92672">=</span> f(x[i], <span style="color:#ae81ff">3.</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    plot_graph(x, y1, y2, y3)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test()
+</span></span></code></pre></div><p><strong>util.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plot_graph</span>(x, y1, y2, y3):
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>figtext(<span style="color:#ae81ff">0.92</span>, <span style="color:#ae81ff">0.03</span>, <span style="color:#e6db74">&#39;$x$&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>figtext(<span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0.9</span>, <span style="color:#e6db74">&#39;$y$&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>plot(x, y1, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;y1&#34;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>plot(x, y2, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;y2&#34;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>plot(x, y3, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;y3&#34;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>savefig(<span style="color:#e6db74">&#39;graph.png&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 23:09:08:~/lpython_project % lpython main.py --backend<span style="color:#f92672">=</span>c --link-numpy
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 23:10:44:~/lpython_project % <span style="color:#75715e"># Works see the graph below</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<p><img src="https://hackmd.io/_uploads/r1yOs6292.png" alt="Output graph"></p>
+<p><strong>Visualization using Matplotlib: Mandelbrot Set</strong></p>
+<p><strong>main.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, f64, pythoncall, TypeVar
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> empty, int32
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>h <span style="color:#f92672">=</span> TypeVar(<span style="color:#e6db74">&#34;h&#34;</span>)
+</span></span><span style="display:flex;"><span>w <span style="color:#f92672">=</span> TypeVar(<span style="color:#e6db74">&#34;w&#34;</span>)
+</span></span><span style="display:flex;"><span>d <span style="color:#f92672">=</span> TypeVar(<span style="color:#e6db74">&#34;d&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@pythoncall</span>(module<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;util&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">show_img_gray</span>(w: i32, h: i32, A: i32[h, w]):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@pythoncall</span>(module<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;util&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">show_img_color</span>(w: i32, h: i32, d: i32, A: i32[h, w, d]):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main0</span>():
+</span></span><span style="display:flex;"><span>    Nx: i32 <span style="color:#f92672">=</span> <span style="color:#ae81ff">600</span>; Ny: i32 <span style="color:#f92672">=</span> <span style="color:#ae81ff">450</span>; Nz: i32 <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>; n_max: i32 <span style="color:#f92672">=</span> <span style="color:#ae81ff">255</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    xcenter: f64 <span style="color:#f92672">=</span> f64(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.5</span>); ycenter: f64 <span style="color:#f92672">=</span> f64(<span style="color:#ae81ff">0.0</span>)
+</span></span><span style="display:flex;"><span>    width: f64 <span style="color:#f92672">=</span> f64(<span style="color:#ae81ff">4</span>); height: f64 <span style="color:#f92672">=</span> f64(<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>    dx_di: f64 <span style="color:#f92672">=</span> width<span style="color:#f92672">/</span>f64(Nx); dy_dj: f64 <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>height<span style="color:#f92672">/</span>f64(Ny)
+</span></span><span style="display:flex;"><span>    x_offset: f64 <span style="color:#f92672">=</span> xcenter <span style="color:#f92672">-</span> f64(Nx<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span>dx_di<span style="color:#f92672">/</span>f64(<span style="color:#ae81ff">2.0</span>)
+</span></span><span style="display:flex;"><span>    y_offset: f64 <span style="color:#f92672">=</span> ycenter <span style="color:#f92672">-</span> f64(Ny<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span>dy_dj<span style="color:#f92672">/</span>f64(<span style="color:#ae81ff">2.0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    i: i32; j: i32; n: i32; idx: i32
+</span></span><span style="display:flex;"><span>    x: f64; y: f64; x_0: f64; y_0: f64; x_sqr: f64; y_sqr: f64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    image: i32[<span style="color:#ae81ff">450</span>, <span style="color:#ae81ff">600</span>] <span style="color:#f92672">=</span> empty([Ny, Nx], dtype<span style="color:#f92672">=</span>int32)
+</span></span><span style="display:flex;"><span>    image_color: i32[<span style="color:#ae81ff">450</span>, <span style="color:#ae81ff">600</span>, <span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> empty([Ny, Nx, Nz], dtype<span style="color:#f92672">=</span>int32)
+</span></span><span style="display:flex;"><span>    palette: i32[<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> empty([<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>], dtype<span style="color:#f92672">=</span>int32)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(Ny):
+</span></span><span style="display:flex;"><span>        y_0 <span style="color:#f92672">=</span> y_offset <span style="color:#f92672">+</span> dy_dj <span style="color:#f92672">*</span> f64(j <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(Nx):
+</span></span><span style="display:flex;"><span>            x_0 <span style="color:#f92672">=</span> x_offset <span style="color:#f92672">+</span> dx_di <span style="color:#f92672">*</span> f64(i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>            x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>; y <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>; n <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span>(<span style="color:#66d9ef">True</span>):
+</span></span><span style="display:flex;"><span>                x_sqr <span style="color:#f92672">=</span> x <span style="color:#f92672">**</span> <span style="color:#ae81ff">2.0</span>
+</span></span><span style="display:flex;"><span>                y_sqr <span style="color:#f92672">=</span> y <span style="color:#f92672">**</span> <span style="color:#ae81ff">2.0</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (x_sqr <span style="color:#f92672">+</span> y_sqr <span style="color:#f92672">&gt;</span> f64(<span style="color:#ae81ff">4</span>) <span style="color:#f92672">or</span> n <span style="color:#f92672">==</span> n_max):
+</span></span><span style="display:flex;"><span>                    image[j,i] <span style="color:#f92672">=</span> <span style="color:#ae81ff">255</span> <span style="color:#f92672">-</span> n
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>                y <span style="color:#f92672">=</span> y_0 <span style="color:#f92672">+</span> f64(<span style="color:#ae81ff">2.0</span>) <span style="color:#f92672">*</span> x <span style="color:#f92672">*</span> y
+</span></span><span style="display:flex;"><span>                x <span style="color:#f92672">=</span> x_0 <span style="color:#f92672">+</span> x_sqr <span style="color:#f92672">-</span> y_sqr
+</span></span><span style="display:flex;"><span>                n <span style="color:#f92672">=</span> n <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    palette[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span>   <span style="color:#ae81ff">0</span>; palette[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">135</span>; palette[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span>  <span style="color:#ae81ff">68</span>
+</span></span><span style="display:flex;"><span>    palette[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span>   <span style="color:#ae81ff">0</span>; palette[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span>  <span style="color:#ae81ff">87</span>; palette[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">231</span>
+</span></span><span style="display:flex;"><span>    palette[<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">214</span>; palette[<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span>  <span style="color:#ae81ff">45</span>; palette[<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span>  <span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>    palette[<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">255</span>; palette[<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">167</span>; palette[<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span>   <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(Ny):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(Nx):
+</span></span><span style="display:flex;"><span>            idx <span style="color:#f92672">=</span> image[j,i] <span style="color:#f92672">-</span> i32(image[j,i]<span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>            image_color[j,i,<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> palette[idx,<span style="color:#ae81ff">0</span>] <span style="color:#75715e"># Red</span>
+</span></span><span style="display:flex;"><span>            image_color[j,i,<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> palette[idx,<span style="color:#ae81ff">1</span>] <span style="color:#75715e"># Green</span>
+</span></span><span style="display:flex;"><span>            image_color[j,i,<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> palette[idx,<span style="color:#ae81ff">2</span>] <span style="color:#75715e"># Blue</span>
+</span></span><span style="display:flex;"><span>            image_color[j,i,<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">255</span>            <span style="color:#75715e"># Alpha</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    show_img_gray(Nx, Ny, image)
+</span></span><span style="display:flex;"><span>    show_img_color(Nx, Ny, Nz, image_color)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Done.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>main0()
+</span></span></code></pre></div><p><strong>util.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">show_img_gray</span>(w, h, A):
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">from</span> matplotlib <span style="color:#f92672">import</span> pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(A, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>show()
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">show_img_color</span>(w, h, d, A):
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">from</span> matplotlib <span style="color:#f92672">import</span> pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(A)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>show()
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>close()
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span>$ ls
+</span></span><span style="display:flex;"><span>main.py util.py
+</span></span><span style="display:flex;"><span>$ lpython main.py --backend<span style="color:#f92672">=</span>c --link-numpy
+</span></span><span style="display:flex;"><span>Done.
+</span></span></code></pre></div><p><img src="https://hackmd.io/_uploads/r1h-wCpch.png" alt="mandelbrot-set-gray"></p>
+<p><img src="https://hackmd.io/_uploads/ByXPEATqn.png" alt="mandelbrot-set-color"></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The benchmarks support the claim that LPython is competitive with its competitors in all features it offers. In JIT, the execution times of LPython-compiled functions are at least as short as equivalent Numba functions.The speed of JIT compilation, itself, is slow in some cases because it depends on a C compiler to generate optimal binary code. For algorithms with rich data structures like <code>dict</code> (hash maps) and <code>list</code>, LPython shows much faster speed than Numba. In AoT compilation for tasks like the Dijkstra algorithm, LPython beats equivalent C++ code very comfortably. For an array-based implementation of the Floyd-Warshall algorithm, LPython generates code almost as fast as doess C++.</p>
+<p>The main takeaway is that LPython/LFortran generate fast code by default. Our benchmarks show that it&rsquo;s straightforward to write high-speed LPython code. We hope to raise expectations that LPython output will be in general at least as fast as the equivalent C++ code. Users love Python because of its many productivity advantages: great tooling, easy syntax, and rich data structures like lists, dicts, sets, and arrays. Because any LPython program is also an ordinary Python program, all the tools &ndash; debuggers and profilers, for instance &ndash; just work. Then, LPython delivers run-time speeds, even with rich data structures at least as short as alternatives in most cases. In the future, LPython will allow user-defined implementations of data structures for those rare cases where the versions shipped with LPython are not good enough.</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://lpython.org//tags/python/">Python</a>&nbsp;
+            
+              <a href="https://lpython.org//tags/announcement/">Announcement</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2023
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://lpython.org/">LPYthon</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+           
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js" integrity="sha384-G0zcxDFp5LWZtDuRMnBkk3EphCK1lhEf4UEyEM693ka574TZGwo4IWwS6QLzM/2t" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha384-w5y/xIeYixWvfM+A1cEbmHPURnvyqmVg5eVENruEdDjcyRLUSNej7512JQGspFUr" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+<script src="https://lpython.org/js/main.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://lpython.org/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>
+
