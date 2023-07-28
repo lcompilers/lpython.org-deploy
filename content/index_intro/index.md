@@ -12,7 +12,4 @@ Main repository at GitHub:
 [https://github.com/lcompilers/lpython](https://github.com/lcompilers/lpython)
 {{< github_lpython_button >}}
 
-Try LPython in your browser using WebAssembly: https://dev.lpython.org/
-
-Twitter: [@lfortranorg](https://twitter.com/lfortranorg)\
 Any questions? Ask us on Zulip [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://lfortran.zulipchat.com/#narrow/stream/311866-LPython).
