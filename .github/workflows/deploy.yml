@@ -13,12 +13,19 @@ jobs:
     - name: Checkout Main
       uses: actions/checkout@v3
 
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v2
+      with:
+        hugo-version: '0.110.0'
+        # extended: true
+
+    - name: Show Hugo version
+      shell: bash -l {0}
+      run: hugo version
+
     - name: Clone the submodule theme
       shell: bash -l {0}
       run: git clone https://github.com/halogenica/beautifulhugo themes/beautifulhugo --depth=1
-
-    - name: Hugo setup
-      uses: klakegg/actions-hugo@1.0.0
 
     - name: Build Site
       shell: bash -l {0}
