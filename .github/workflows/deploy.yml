@@ -66,5 +66,5 @@ jobs:
         git commit --allow-empty -m "${COMMIT_MESSAGE}"
 
     - name: GIT Deploy
-      if: ${{ github.ref != 'refs/heads/main' && github.event.pull_request.head.repo.full_name == 'lpython/lpython.org-deploy' }}
+      if: ${{ github.ref == 'refs/heads/main' }}
       run: git push origin gh-pages
