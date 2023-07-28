@@ -1,6 +1,6 @@
 baseURL = "https://lpython.org/"
 languageCode = "en-us"
-title = "LPYthon"
+title = "LPython"
 theme = "beautifulhugo"
 googleAnalytics = "" # update google analytics id
 
