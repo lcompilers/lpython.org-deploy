@@ -15,7 +15,7 @@ Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, 
 
 In this blog, we describe features of LPython including Ahead-of-Time (AoT) compilation, JIT compilation, and interoperability with CPython. We also showcase LPython's performance against its competitors such as Numba and C++ via several benchmarks.
 
-![LCompilers-Diagram](https://hackmd.io/_uploads/rJFejQpc3.png)
+![LCompilers-Diagram](images/lcompilers_diagram.png)
 
 
 ## Features of LPython
@@ -1520,8 +1520,7 @@ def plot_graph(x, y1, y2, y3):
 (lp) 23:10:44:~/lpython_project % # Works see the graph below
 ```
 
-<!-- ![Output graph](https://hackmd.io/_uploads/H1GHcE3q2.png) -->
-![Output graph](https://hackmd.io/_uploads/r1yOs6292.png)
+![Output graph](images/graph.png)
 
 **Visualization using Matplotlib: Mandelbrot Set**
 
@@ -1619,10 +1618,10 @@ $ lpython main.py --backend=c --link-numpy
 Done.
 ```
 
-![mandelbrot-set-gray](https://hackmd.io/_uploads/r1h-wCpch.png)
+![mandelbrot-set-gray](images/gray.png)
 
 
-![mandelbrot-set-color](https://hackmd.io/_uploads/ByXPEATqn.png)
+![mandelbrot-set-color](images/color.png)
 
 
 ## Conclusion
