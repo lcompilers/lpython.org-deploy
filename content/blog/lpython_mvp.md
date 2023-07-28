@@ -147,6 +147,7 @@ All optimizations are applied via one command-line argument, `--fast`. To select
 `--pass=inline_function_calls,loop_unroll`
 
 Following is an examples of ASR and transformed ASR after applying the optimisations
+
 ```py
 from lpython import i32
 
