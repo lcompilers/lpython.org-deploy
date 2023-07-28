@@ -146,14 +146,15 @@ All optimizations are applied via one command-line argument, `--fast`. To select
 
 `--pass=inline_function_calls,loop_unroll`
 
-Following is an examples of ASR and transformed ASR after applying the above two optimisations
+Following is an examples of ASR and transformed ASR after applying the optimisations
 ```py
 from lpython import i32
 
+def compute_x() -> i32:
+    return (2 * 3) ** 1 + 2
+
 def main():
-    x: i32 = 0; i: i32
-    for i in range(33):
-        x += i
+    x: i32 = compute_x()
     print(x)
 
 main()
@@ -206,17 +207,17 @@ $ lpython examples/expr2.py --show-asr
                                     .false.
                                     ()
                                 ),
-                            main:
+                            compute_x:
                                 (Function
                                     (SymbolTable
                                         3
                                         {
-                                            i:
+                                            _lpython_return_variable:
                                                 (Variable
                                                     3
-                                                    i
+                                                    _lpython_return_variable
                                                     []
-                                                    Local
+                                                    ReturnVar
                                                     ()
                                                     ()
                                                     Default
@@ -226,10 +227,64 @@ $ lpython examples/expr2.py --show-asr
                                                     Public
                                                     Required
                                                     .false.
-                                                ),
+                                                )
+                                        })
+                                    compute_x
+                                    (FunctionType
+                                        []
+                                        (Integer 4)
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    []
+                                    []
+                                    [(=
+                                        (Var 3 _lpython_return_variable)
+                                        (IntegerBinOp
+                                            (IntegerBinOp
+                                                (IntegerBinOp
+                                                    (IntegerConstant 2 (Integer 4))
+                                                    Mul
+                                                    (IntegerConstant 3 (Integer 4))
+                                                    (Integer 4)
+                                                    (IntegerConstant 6 (Integer 4))
+                                                )
+                                                Pow
+                                                (IntegerConstant 1 (Integer 4))
+                                                (Integer 4)
+                                                (IntegerConstant 6 (Integer 4))
+                                            )
+                                            Add
+                                            (IntegerConstant 2 (Integer 4))
+                                            (Integer 4)
+                                            (IntegerConstant 8 (Integer 4))
+                                        )
+                                        ()
+                                    )
+                                    (Return)]
+                                    (Var 3 _lpython_return_variable)
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                ),
+                            main:
+                                (Function
+                                    (SymbolTable
+                                        4
+                                        {
                                             x:
                                                 (Variable
-                                                    3
+                                                    4
                                                     x
                                                     []
                                                     Local
@@ -260,40 +315,23 @@ $ lpython examples/expr2.py --show-asr
                                         []
                                         .false.
                                     )
-                                    []
+                                    [compute_x]
                                     []
                                     [(=
-                                        (Var 3 x)
-                                        (IntegerConstant 0 (Integer 4))
-                                        ()
-                                    )
-                                    (DoLoop
-                                        ()
-                                        ((Var 3 i)
-                                        (IntegerConstant 0 (Integer 4))
-                                        (IntegerBinOp
-                                            (IntegerConstant 33 (Integer 4))
-                                            Sub
-                                            (IntegerConstant 1 (Integer 4))
-                                            (Integer 4)
-                                            (IntegerConstant 32 (Integer 4))
-                                        )
-                                        (IntegerConstant 1 (Integer 4)))
-                                        [(=
-                                            (Var 3 x)
-                                            (IntegerBinOp
-                                                (Var 3 x)
-                                                Add
-                                                (Var 3 i)
-                                                (Integer 4)
-                                                ()
-                                            )
+                                        (Var 4 x)
+                                        (FunctionCall
+                                            2 compute_x
                                             ()
-                                        )]
+                                            []
+                                            (Integer 4)
+                                            ()
+                                            ()
+                                        )
+                                        ()
                                     )
                                     (Print
                                         ()
-                                        [(Var 3 x)]
+                                        [(Var 4 x)]
                                         ()
                                         ()
                                     )]
@@ -339,7 +377,7 @@ $ lpython examples/expr2.py --show-asr
 )
 ```
 ```clojure
-$ lpython examples/expr2.py --show-asr --pass=inline_function_calls,loop_unroll
+$ lpython examples/expr2.py --show-asr --pass=inline_function_calls,unused_functions
 (TranslationUnit
     (SymbolTable
         1
@@ -389,12 +427,12 @@ $ lpython examples/expr2.py --show-asr --pass=inline_function_calls,loop_unroll
                             main:
                                 (Function
                                     (SymbolTable
-                                        3
+                                        4
                                         {
-                                            i:
+                                            _lpython_return_variable_compute_x:
                                                 (Variable
-                                                    3
-                                                    i
+                                                    4
+                                                    _lpython_return_variable_compute_x
                                                     []
                                                     Local
                                                     ()
@@ -409,7 +447,7 @@ $ lpython examples/expr2.py --show-asr --pass=inline_function_calls,loop_unroll
                                                 ),
                                             x:
                                                 (Variable
-                                                    3
+                                                    4
                                                     x
                                                     []
                                                     Local
@@ -422,6 +460,16 @@ $ lpython examples/expr2.py --show-asr --pass=inline_function_calls,loop_unroll
                                                     Public
                                                     Required
                                                     .false.
+                                                ),
+                                            ~empty_block:
+                                                (Block
+                                                    (SymbolTable
+                                                        7
+                                                        {
+
+                                                        })
+                                                    ~empty_block
+                                                    []
                                                 )
                                         })
                                     main
@@ -443,107 +491,44 @@ $ lpython examples/expr2.py --show-asr --pass=inline_function_calls,loop_unroll
                                     []
                                     []
                                     [(=
-                                        (Var 3 x)
-                                        (IntegerConstant 0 (Integer 4))
-                                        ()
-                                    )
-                                    (=
-                                        (Var 3 i)
+                                        (Var 4 _lpython_return_variable_compute_x)
                                         (IntegerBinOp
-                                            (IntegerConstant 0 (Integer 4))
-                                            Sub
-                                            (IntegerConstant 1 (Integer 4))
-                                            (Integer 4)
-                                            ()
-                                        )
-                                        ()
-                                    )
-                                    (WhileLoop
-                                        ()
-                                        (IntegerCompare
                                             (IntegerBinOp
-                                                (Var 3 i)
-                                                Add
+                                                (IntegerBinOp
+                                                    (IntegerConstant 2 (Integer 4))
+                                                    Mul
+                                                    (IntegerConstant 3 (Integer 4))
+                                                    (Integer 4)
+                                                    (IntegerConstant 6 (Integer 4))
+                                                )
+                                                Pow
                                                 (IntegerConstant 1 (Integer 4))
                                                 (Integer 4)
-                                                ()
+                                                (IntegerConstant 6 (Integer 4))
                                             )
-                                            LtE
-                                            (IntegerConstant 31 (Integer 4))
-                                            (Logical 4)
-                                            ()
-                                        )
-                                        [(=
-                                            (Var 3 i)
-                                            (IntegerBinOp
-                                                (Var 3 i)
-                                                Add
-                                                (IntegerConstant 1 (Integer 4))
-                                                (Integer 4)
-                                                ()
-                                            )
-                                            ()
-                                        )
-                                        (=
-                                            (Var 3 x)
-                                            (IntegerBinOp
-                                                (Var 3 x)
-                                                Add
-                                                (Var 3 i)
-                                                (Integer 4)
-                                                ()
-                                            )
-                                            ()
-                                        )
-                                        ... # Above two assignments are repeated 30 times because of loop_unroll
-                                        (=
-                                            (Var 3 i)
-                                            (IntegerBinOp
-                                                (Var 3 i)
-                                                Add
-                                                (IntegerConstant 1 (Integer 4))
-                                                (Integer 4)
-                                                ()
-                                            )
-                                            ()
-                                        )
-                                        (=
-                                            (Var 3 x)
-                                            (IntegerBinOp
-                                                (Var 3 x)
-                                                Add
-                                                (Var 3 i)
-                                                (Integer 4)
-                                                ()
-                                            )
-                                            ()
-                                        )]
-                                    )
-                                    (=
-                                        (Var 3 i)
-                                        (IntegerBinOp
-                                            (Var 3 i)
                                             Add
-                                            (IntegerConstant 1 (Integer 4))
+                                            (IntegerConstant 2 (Integer 4))
                                             (Integer 4)
-                                            ()
+                                            (IntegerConstant 8 (Integer 4))
                                         )
                                         ()
                                     )
+                                    (GoTo
+                                        1
+                                        __1
+                                    )
+                                    (BlockCall
+                                        1
+                                        4 ~empty_block
+                                    )
                                     (=
-                                        (Var 3 x)
-                                        (IntegerBinOp
-                                            (Var 3 x)
-                                            Add
-                                            (Var 3 i)
-                                            (Integer 4)
-                                            ()
-                                        )
+                                        (Var 4 x)
+                                        (Var 4 _lpython_return_variable_compute_x)
                                         ()
                                     )
                                     (Print
                                         ()
-                                        [(Var 3 x)]
+                                        [(Var 4 x)]
                                         ()
                                         ()
                                     )]
