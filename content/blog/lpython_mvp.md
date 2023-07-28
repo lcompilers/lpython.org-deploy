@@ -146,7 +146,448 @@ All optimizations are applied via one command-line argument, `--fast`. To select
 
 `--pass=inline_function_calls,loop_unroll`
 
-<!-- TODO: Add examples of transformed ASR after applying the above two optimisations -->
+Following is an examples of ASR and transformed ASR after applying the above two optimisations
+```py
+from lpython import i32
+
+def main():
+    x: i32 = 0; i: i32
+    for i in range(33):
+        x += i
+    print(x)
+
+main()
+```
+```clojure
+$ lpython examples/expr2.py --show-asr
+(TranslationUnit
+    (SymbolTable
+        1
+        {
+            __main__:
+                (Module
+                    (SymbolTable
+                        2
+                        {
+                            __main____global_statements:
+                                (Function
+                                    (SymbolTable
+                                        5
+                                        {
+
+                                        })
+                                    __main____global_statements
+                                    (FunctionType
+                                        []
+                                        ()
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    [main]
+                                    []
+                                    [(SubroutineCall
+                                        2 main
+                                        ()
+                                        []
+                                        ()
+                                    )]
+                                    ()
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                ),
+                            main:
+                                (Function
+                                    (SymbolTable
+                                        3
+                                        {
+                                            i:
+                                                (Variable
+                                                    3
+                                                    i
+                                                    []
+                                                    Local
+                                                    ()
+                                                    ()
+                                                    Default
+                                                    (Integer 4)
+                                                    ()
+                                                    Source
+                                                    Public
+                                                    Required
+                                                    .false.
+                                                ),
+                                            x:
+                                                (Variable
+                                                    3
+                                                    x
+                                                    []
+                                                    Local
+                                                    ()
+                                                    ()
+                                                    Default
+                                                    (Integer 4)
+                                                    ()
+                                                    Source
+                                                    Public
+                                                    Required
+                                                    .false.
+                                                )
+                                        })
+                                    main
+                                    (FunctionType
+                                        []
+                                        ()
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    []
+                                    []
+                                    [(=
+                                        (Var 3 x)
+                                        (IntegerConstant 0 (Integer 4))
+                                        ()
+                                    )
+                                    (DoLoop
+                                        ()
+                                        ((Var 3 i)
+                                        (IntegerConstant 0 (Integer 4))
+                                        (IntegerBinOp
+                                            (IntegerConstant 33 (Integer 4))
+                                            Sub
+                                            (IntegerConstant 1 (Integer 4))
+                                            (Integer 4)
+                                            (IntegerConstant 32 (Integer 4))
+                                        )
+                                        (IntegerConstant 1 (Integer 4)))
+                                        [(=
+                                            (Var 3 x)
+                                            (IntegerBinOp
+                                                (Var 3 x)
+                                                Add
+                                                (Var 3 i)
+                                                (Integer 4)
+                                                ()
+                                            )
+                                            ()
+                                        )]
+                                    )
+                                    (Print
+                                        ()
+                                        [(Var 3 x)]
+                                        ()
+                                        ()
+                                    )]
+                                    ()
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                )
+                        })
+                    __main__
+                    []
+                    .false.
+                    .false.
+                ),
+            main_program:
+                (Program
+                    (SymbolTable
+                        6
+                        {
+                            __main____global_statements:
+                                (ExternalSymbol
+                                    6
+                                    __main____global_statements
+                                    2 __main____global_statements
+                                    __main__
+                                    []
+                                    __main____global_statements
+                                    Public
+                                )
+                        })
+                    main_program
+                    [__main__]
+                    [(SubroutineCall
+                        6 __main____global_statements
+                        2 __main____global_statements
+                        []
+                        ()
+                    )]
+                )
+        })
+    []
+)
+```
+```clojure
+$ lpython examples/expr2.py --show-asr --pass=inline_function_calls,loop_unroll
+(TranslationUnit
+    (SymbolTable
+        1
+        {
+            __main__:
+                (Module
+                    (SymbolTable
+                        2
+                        {
+                            __main____global_statements:
+                                (Function
+                                    (SymbolTable
+                                        5
+                                        {
+
+                                        })
+                                    __main____global_statements
+                                    (FunctionType
+                                        []
+                                        ()
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    [main]
+                                    []
+                                    [(SubroutineCall
+                                        2 main
+                                        ()
+                                        []
+                                        ()
+                                    )]
+                                    ()
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                ),
+                            main:
+                                (Function
+                                    (SymbolTable
+                                        3
+                                        {
+                                            i:
+                                                (Variable
+                                                    3
+                                                    i
+                                                    []
+                                                    Local
+                                                    ()
+                                                    ()
+                                                    Default
+                                                    (Integer 4)
+                                                    ()
+                                                    Source
+                                                    Public
+                                                    Required
+                                                    .false.
+                                                ),
+                                            x:
+                                                (Variable
+                                                    3
+                                                    x
+                                                    []
+                                                    Local
+                                                    ()
+                                                    ()
+                                                    Default
+                                                    (Integer 4)
+                                                    ()
+                                                    Source
+                                                    Public
+                                                    Required
+                                                    .false.
+                                                )
+                                        })
+                                    main
+                                    (FunctionType
+                                        []
+                                        ()
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    []
+                                    []
+                                    [(=
+                                        (Var 3 x)
+                                        (IntegerConstant 0 (Integer 4))
+                                        ()
+                                    )
+                                    (=
+                                        (Var 3 i)
+                                        (IntegerBinOp
+                                            (IntegerConstant 0 (Integer 4))
+                                            Sub
+                                            (IntegerConstant 1 (Integer 4))
+                                            (Integer 4)
+                                            ()
+                                        )
+                                        ()
+                                    )
+                                    (WhileLoop
+                                        ()
+                                        (IntegerCompare
+                                            (IntegerBinOp
+                                                (Var 3 i)
+                                                Add
+                                                (IntegerConstant 1 (Integer 4))
+                                                (Integer 4)
+                                                ()
+                                            )
+                                            LtE
+                                            (IntegerConstant 31 (Integer 4))
+                                            (Logical 4)
+                                            ()
+                                        )
+                                        [(=
+                                            (Var 3 i)
+                                            (IntegerBinOp
+                                                (Var 3 i)
+                                                Add
+                                                (IntegerConstant 1 (Integer 4))
+                                                (Integer 4)
+                                                ()
+                                            )
+                                            ()
+                                        )
+                                        (=
+                                            (Var 3 x)
+                                            (IntegerBinOp
+                                                (Var 3 x)
+                                                Add
+                                                (Var 3 i)
+                                                (Integer 4)
+                                                ()
+                                            )
+                                            ()
+                                        )
+                                        ... # Above two assignments are repeated 30 times because of loop_unroll
+                                        (=
+                                            (Var 3 i)
+                                            (IntegerBinOp
+                                                (Var 3 i)
+                                                Add
+                                                (IntegerConstant 1 (Integer 4))
+                                                (Integer 4)
+                                                ()
+                                            )
+                                            ()
+                                        )
+                                        (=
+                                            (Var 3 x)
+                                            (IntegerBinOp
+                                                (Var 3 x)
+                                                Add
+                                                (Var 3 i)
+                                                (Integer 4)
+                                                ()
+                                            )
+                                            ()
+                                        )]
+                                    )
+                                    (=
+                                        (Var 3 i)
+                                        (IntegerBinOp
+                                            (Var 3 i)
+                                            Add
+                                            (IntegerConstant 1 (Integer 4))
+                                            (Integer 4)
+                                            ()
+                                        )
+                                        ()
+                                    )
+                                    (=
+                                        (Var 3 x)
+                                        (IntegerBinOp
+                                            (Var 3 x)
+                                            Add
+                                            (Var 3 i)
+                                            (Integer 4)
+                                            ()
+                                        )
+                                        ()
+                                    )
+                                    (Print
+                                        ()
+                                        [(Var 3 x)]
+                                        ()
+                                        ()
+                                    )]
+                                    ()
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                )
+                        })
+                    __main__
+                    []
+                    .false.
+                    .false.
+                ),
+            main_program:
+                (Program
+                    (SymbolTable
+                        6
+                        {
+                            __main____global_statements:
+                                (ExternalSymbol
+                                    6
+                                    __main____global_statements
+                                    2 __main____global_statements
+                                    __main__
+                                    []
+                                    __main____global_statements
+                                    Public
+                                )
+                        })
+                    main_program
+                    [__main__]
+                    [(SubroutineCall
+                        6 __main____global_statements
+                        2 __main____global_statements
+                        []
+                        ()
+                    )]
+                )
+        })
+    []
+)
+```
 
 ### Ahead-of-Time (AoT) compilation
 
