@@ -1,26 +1,18 @@
 ---
 headless: true
-date: 2021-04-17
+date: 2023-07-28
 ---
 
-LFortran is a modern open-source (BSD licensed) interactive Fortran compiler
-built on top of LLVM. It can execute user's code interactively to allow
-exploratory work (much like Python, MATLAB or Julia) as well as compile to
-binaries with the goal to run user's code on modern architectures such as
-multi-core CPUs and GPUs.
+LPython is a Python compiler that aims to provide optimized machine code by compiling type-annotated Python code. It offers several backends, including LLVM, C, C++, and WASM, which allow it to generate code into multiple target languages simultaneously. LPython's main focus is on speed and performance, and it achieves this through various features and optimizations.
 
-LFortran is in development (alpha stage), and as of spring 2023 we are able to
-compile and run both legacy and modern Minpack, see the following blog post for
-more information:
-[LFortran Breakthrough: Now Building Legacy and Modern Minpack](/blog/2023/05/lfortran-breakthrough-now-building-legacy-and-modern-minpack/).
+LPython is still in development (alpha stage) and may evolve further to encompass more extensive Python code and additional optimizations.
+[LPython: Making Python faster with LLVM](/blog/2023/05/lpython-making-python-faster-with-llvm/).
 
 Main repository at GitHub:
-[https://github.com/lfortran/lfortran](https://github.com/lfortran/lfortran)
-{{< github_lfortran_button >}}
+[https://github.com/lcompilers/lpython](https://github.com/lcompilers/lpython)
+{{< github_lpython_button >}}
 
-Try LFortran in your browser using WebAssembly: https://dev.lfortran.org/
+Try LPython in your browser using WebAssembly: https://dev.lpython.org/
 
 Twitter: [@lfortranorg](https://twitter.com/lfortranorg)  
-Any questions? Ask us on Zulip [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://lfortran.zulipchat.com/)
-or our [mailing list](https://groups.io/g/lfortran). You can also use the
-Fortran Discourse [forum](https://fortran-lang.discourse.group).
+Any questions? Ask us on Zulip [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://lfortran.zulipchat.com/#narrow/stream/311866-LPython).

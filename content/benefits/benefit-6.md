@@ -2,5 +2,4 @@
 title: "Open source"
 icon: "fas fa-code-branch"
 ---
-Fortran has many excellent open source compilers: GFortran for production; new
-compilers in development such as Flang and LFortran.
+LPython, being an open-source project, enjoys the advantages of cost-effectiveness, transparency, community collaboration, flexibility, rapid bug resolution, enhanced security, sustainability, knowledge exchange, worldwide support.

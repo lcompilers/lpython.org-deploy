@@ -1,5 +1,5 @@
 ---
-title: LFortran Blog
+title: LPython Blog
 type: page
 layout: bloglayout
 ---

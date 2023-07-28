@@ -1,6 +1,5 @@
 ---
-title: "Interactive"
+title: "Just-In-Time (JIT)"
 icon: "fa fa-cogs"
 ---
-LFortran allows to use Fortran interactively just like Python, Julia or MATLAB.
-It works in a Jupyter notebook.
+LPython supports Just-in-time compilation which requires only decorating Python function with @lpython.

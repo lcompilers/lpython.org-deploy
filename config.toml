@@ -1,8 +1,8 @@
-baseURL = "https://lfortran.org/"
+baseURL = "https://lpython.org/"
 languageCode = "en-us"
-title = "LFortran"
+title = "LPYthon"
 theme = "beautifulhugo"
-googleAnalytics = "UA-138613977-1"
+googleAnalytics = "" # update google analytics id
 
 [permalinks]
   blog = "blog/:year/:month/:title/"
@@ -11,7 +11,7 @@ googleAnalytics = "UA-138613977-1"
   tag = "tags"
 
 [Params]
-  subtitle = "Modern interactive LLVM-based Fortran compiler"
+  subtitle = "High performance typed Python compiler"
   readingTime = true
   wordCount = true
 

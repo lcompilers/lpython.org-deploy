@@ -1,6 +1,6 @@
 ---
-title: "Fortran is fast"
+title: "LPython is fast"
 icon: "fa fa-fighter-jet"
 ---
-Fortran is built from the ground up to translate mathematics into simple,
+LPython is built from the ground up to translate numerical, array-oriented code into simple,
 readable, and fast code.

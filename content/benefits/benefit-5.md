@@ -1,6 +1,6 @@
 ---
-title: "Established language"
-icon: "fa fa-check"
+title: "Interoperability with CPython"
+icon: "fa fa-python"
 ---
-[Fortran](https://fortran-lang.org) is an established language, building on 64
-years of expertise.  Widely used for High Performance Computing (HPC).
+LPython offers seamless interoperability with CPython.
+One can easily call functions in CPython libraries
