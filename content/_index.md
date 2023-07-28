@@ -76,7 +76,7 @@ Name | Total Contributors | Recent Contributors | Total stars
 [Pythran](https://github.com/serge-sans-paille/pythran)     |   58 |  9 |  1912
 [Pypy.org](https://github.com/pypy/pypy.org)                |   36 |  5 |    21
 [Weld](https://github.com/weld-project/weld)                |   35 |  0 |  2945
-[Lpython](https://github.com/lcompilers/lpython)            |   34 | 28 |   141
+[LPython](https://github.com/lcompilers/lpython)            |   34 | 28 |   141
 [Ironpython3](https://github.com/IronLanguages/ironpython3) |   33 |  5 |  2179
 [Pyccel](https://github.com/pyccel/pyccel)                  |   32 | 17 |   279
 [Pyjs](https://github.com/pyjs/pyjs)                        |   30 |  0 |  1123
