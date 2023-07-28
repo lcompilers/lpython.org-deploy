@@ -45,7 +45,91 @@ for i0 in range(0, length_dim_0):
 
 After applying all the ASR-to-ASR passes, LPython sends the final ASR to the backends selected by the user, via command-line arguments like, `--show-c` (generates C code), `--show-llvm` (generates LLVM code).
 
-<!-- TODO: Add examples of --show-c and --show-llvm command line argument -->
+Add examples of `--show-c` and `--show-llvm`
+```py
+from lpython import i32
+
+def main():
+    x: i32
+    x = (2+3)*5
+    print(x)
+
+main()
+```
+```c
+$ lpython examples/expr2.py --show-c
+#include <inttypes.h>
+
+#include <stdlib.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <lfortran_intrinsics.h>
+
+void main0();
+void __main____global_statements();
+
+// Implementations
+void main0()
+{
+    int32_t x;
+    x = (2 + 3)*5;
+    printf("%d\n", x);
+}
+
+void __main____global_statements()
+{
+    main0();
+}
+
+int main(int argc, char* argv[])
+{
+    _lpython_set_argv(argc, argv);
+    __main____global_statements();
+    return 0;
+}
+```
+```llvm
+$ lpython examples/expr2.py --show-llvm
+; ModuleID = 'LFortran'
+source_filename = "LFortran"
+
+@0 = private unnamed_addr constant [2 x i8] c" \00", align 1
+@1 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
+@2 = private unnamed_addr constant [5 x i8] c"%d%s\00", align 1
+
+define void @__module___main_____main____global_statements() {
+.entry:
+  call void @__module___main___main0()
+  br label %return
+
+return:                                           ; preds = %.entry
+  ret void
+}
+
+define void @__module___main___main0() {
+.entry:
+  %x = alloca i32, align 4
+  store i32 25, i32* %x, align 4
+  %0 = load i32, i32* %x, align 4
+  call void (i8*, ...) @_lfortran_printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @2, i32 0, i32 0), i32 %0, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @1, i32 0, i32 0))
+  br label %return
+
+return:                                           ; preds = %.entry
+  ret void
+}
+
+declare void @_lfortran_printf(i8*, ...)
+
+define i32 @main(i32 %0, i8** %1) {
+.entry:
+  call void @_lpython_set_argv(i32 %0, i8** %1)
+  call void @__module___main_____main____global_statements()
+  ret i32 0
+}
+
+declare void @_lpython_set_argv(i32, i8**)
+```
 
 ### Machine Independent Code Optimisations
 
