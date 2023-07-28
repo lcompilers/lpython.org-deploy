@@ -11,6 +11,11 @@ draft: false
 
 LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C++, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.
 
+We are releasing an alpha version of LPython, meaning it is expected you
+encounter bugs when you use it (please report them!). You can install it using
+Conda (`conda install -c conda-forge lpython`), or build from
+[source](https://github.com/lcompilers/lpython).
+
 Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython's intermediate optimizations are independent of the backends and frontends. The two compilers, LPython and LFortran, share all benefits of improvements at the ASR level. "Speed" is the chief tenet of the LPython project. Our objective is to produce a compiler that both runs exceptionally fast and generates exceptionally fast code.
 
 In this blog, we describe features of LPython including Ahead-of-Time (AoT) compilation, JIT compilation, and interoperability with CPython. We also showcase LPython's performance against its competitors such as Numba and C++ via several benchmarks.
