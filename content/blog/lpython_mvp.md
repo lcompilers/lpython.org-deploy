@@ -20,7 +20,7 @@ Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, 
 
 In this blog, we describe features of LPython including Ahead-of-Time (AoT) compilation, JIT compilation, and interoperability with CPython. We also showcase LPython's performance against its competitors such as Numba and C++ via several benchmarks.
 
-![LCompilers-Diagram](https://github.com/lcompilers/lpython.org-deploy/blob/main/content/blog/images/lcompilers_diagram.png)
+![LCompilers-Diagram](https://lpython.org/blog/images/lcompilers_diagram.png)
 
 
 ## Features of LPython
@@ -1525,7 +1525,7 @@ def plot_graph(x, y1, y2, y3):
 (lp) 23:10:44:~/lpython_project % # Works see the graph below
 ```
 
-![Output graph](https://github.com/lcompilers/lpython.org-deploy/blob/main/content/blog/images/graph.png)
+![Output graph](https://lpython.org/blog/images/graph.png)
 
 **Visualization using Matplotlib: Mandelbrot Set**
 
@@ -1623,10 +1623,10 @@ $ lpython main.py --backend=c --link-numpy
 Done.
 ```
 
-![mandelbrot-set-gray](https://github.com/lcompilers/lpython.org-deploy/blob/main/content/blog/images/gray.png)
+![mandelbrot-set-gray](https://lpython.org/blog/images/gray.png)
 
 
-![mandelbrot-set-color](https://github.com/lcompilers/lpython.org-deploy/blob/main/content/blog/images/color.png)
+![mandelbrot-set-color](https://lpython.org/blog/images/color.png)
 
 
 ## Conclusion
