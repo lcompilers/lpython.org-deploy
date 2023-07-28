@@ -58,7 +58,7 @@ LPython implements several machine-independent optimisations via ASR-to-ASR pass
 5. Transforming division to multiplication operation
 6. Fused multiplication and addition
 
-All optimizations are applied via one command-line argument, --fast. To select individual optimizations instead, write a command-line argument like the following:
+All optimizations are applied via one command-line argument, `--fast`. To select individual optimizations instead, write a command-line argument like the following:
 
 `--pass=inline_function_calls,loop_unroll`
 
@@ -95,7 +95,7 @@ print(res)
 ./a.out  0.01s user 0.00s system 89% cpu 0.012 total
 ```
 
-You can see that it's very fast. It's still plenty fast with the C backend via the command-line argument --backend=c:
+You can see that it's very fast. It's still plenty fast with the C backend via the command-line argument `--backend=c`:
 
 ```zsh
 % time lpython /Users/czgdp1807/lpython_project/debug.py --backend=c
@@ -107,13 +107,13 @@ Note that time lpython `/Users/czgdp1807/lpython_project/debug.py --backend=c` i
 
 ### Just-In-Time Compilation
 
-Just-in-time compilation in LPython requires only decorating Python function with @lpython. The decorator takes an option for specifying the desired backend, as in, @lpython(backend="c") or @lpython(backend="llvm"). Only C is supported at present; LLVM and others will be added in the near future. The decorator also propagates backend-specific options. For example
+Just-in-time compilation in LPython requires only decorating Python function with `@lpython`. The decorator takes an option for specifying the desired backend, as in, `@lpython(backend="c")` or `@lpython(backend="llvm")`. Only C is supported at present; LLVM and others will be added in the near future. The decorator also propagates backend-specific options. For example
 
 ```python
 @lpython(backend="c",
-    backend_optimization_flags=["-ffast-math",
-                                "-funroll-loops",
-                                "-O1"])
+         backend_optimization_flags=["-ffast-math",
+                                     "-funroll-loops",
+                                     "-O1"])
 ```
 
 Note that by default C backend is used without any optimisation flags.
@@ -187,7 +187,7 @@ def get_email(text):
 lpython@lcompilers.org
 ```
 
-Note: The `@pythoncall` and `@lpython` decorators are presently supported with just the `C` backend but eventually will work with the LLVM backend and that's work in progress.
+*Note*: The `@pythoncall` and `@lpython` decorators are presently supported with just the `C` backend but eventually will work with the LLVM backend and that's work in progress.
 
 
 ## Benchmarks and Demos
@@ -200,8 +200,13 @@ We compare JIT compilation of LPython to Numba on **summation of all the element
 
 **System Information**
 
-Softwares - The numba version used is `numba-0.57.1`, LPython commit is `a39430386a0e7ea5de2f569e27229017dff78330` and Python version is `Python 3.10.4`.
+| Compiler | Version |
+|---|---|
+| Numba | 0.57.1 |
+| LPython | 0.19.0 |
+| Python | 3.10.4 |
 
+<br/>
 <!-- Add your systems like System - Linux, System - Windows, etc and then add the results for your System in the tables that follow -->
 
 **Summation of all the elements of a 1-D array**
@@ -261,6 +266,8 @@ test()
 | Numba | 0.20 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | LPython | 0.32 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.60 |
 
+<br/>
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | LPython | 0.013 | Apple M1 MBP 2020 | 1.00 |
@@ -272,6 +279,7 @@ test()
 | LPython | 0.048 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | Numba | 0.048 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 **Pointwise multiplication of two 1-D arrays**
@@ -325,6 +333,8 @@ test()
 | Numba | 0.21 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | LPython | 0.31 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.48 |
 
+<br/>
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | Numba | 0.041 | Apple M1 MBP 2020 | 1.00 |
@@ -336,6 +346,7 @@ test()
 | Numba | 0.21 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | LPython | 0.21 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 **Insertion sort on lists**
@@ -405,6 +416,8 @@ test()
 | Numba | 0.35 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | LPython | 0.37 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.06 |
 
+<br/>
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | LPython | 0.11 | Apple M1 MBP 2020 | 1.00 |
@@ -416,6 +429,7 @@ test()
 | LPython | 0.10 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | Numba | 0.36 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 3.60 |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 **Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph**
@@ -538,6 +552,8 @@ test()
 | LPython | 1.08 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | Numba | 1.69 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.56 |
 
+<br/>
+
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
 | LPython | 0.23 | Apple M1 MBP 2020 | 1.00 |
@@ -549,6 +565,7 @@ test()
 | LPython | 0.87 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | Numba | 1.95 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 2.24 |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 ### Ahead-of-Time (AoT) Compilation
@@ -557,7 +574,15 @@ Next, we see how LPython compares to other AoT compilers and to the standard CPy
 
 **System Information**
 
-The Clang++ version used is `14.0.3`, `g++` version is `11.3.0`, LPython commit is `a39430386a0e7ea5de2f569e27229017dff78330` and Python version is `Python 3.10.4`.
+
+| Compiler | Version |
+|---|---|
+| clang++ | 14.0.3 |
+| g++ | 11.3.0 |
+| LPython | 0.19.0 |
+| Python | 3.10.4 |
+
+<br/>
 
 **Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph**
 
@@ -697,6 +722,8 @@ int main() {
 | g++ | 1.358 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 2.21 |
 | Python | 7.365 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 12.01 |
 
+<br/>
+
 Note the optimization flags furnished to each compiler.
 
 | Compiler/Interpreter | Optimization flags used |
@@ -705,6 +732,8 @@ Note the optimization flags furnished to each compiler.
 | Clang++ | `-ffast-math -funroll-loops -O3`|
 | g++ | `-ffast-math -funroll-loops -O3`|
 | Python | - |
+
+<br/>
 
 <!-- TODO: Write a summary of the results -->
 
@@ -806,7 +835,7 @@ int main() {
 | LPython | 2.933 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 4.22 |
 | Python | 440.588 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 633.94 |
 
-
+<br/>
 <!-- TODO: Remove above line if the following table looks good.-->
 
 Note the optimization flags furnished to each compiler.
@@ -818,6 +847,7 @@ Note the optimization flags furnished to each compiler.
 | g++ | `-ffast-math -funroll-loops -O3`|
 | Python | - |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 ### Interoperability with CPython
