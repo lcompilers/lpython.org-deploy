@@ -323,7 +323,7 @@ Conda (<code>conda install -c conda-forge lpython</code>), or build from
 <a href="https://github.com/lcompilers/lpython">source</a>.</p>
 <p>Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython&rsquo;s intermediate optimizations are independent of the backends and frontends. The two compilers, LPython and LFortran, share all benefits of improvements at the ASR level. &ldquo;Speed&rdquo; is the chief tenet of the LPython project. Our objective is to produce a compiler that both runs exceptionally fast and generates exceptionally fast code.</p>
 <p>In this blog, we describe features of LPython including Ahead-of-Time (AoT) compilation, JIT compilation, and interoperability with CPython. We also showcase LPython&rsquo;s performance against its competitors such as Numba and C++ via several benchmarks.</p>
-<p><img src="https://github.com/lcompilers/lpython.org-deploy/blob/main/content/blog/images/lcompilers_diagram.png" alt="LCompilers-Diagram"></p>
+<p><img src="https://lpython.org/blog/images/lcompilers_diagram.png" alt="LCompilers-Diagram"></p>
 <h2 id="features-of-lpython">Features of LPython</h2>
 <h3 id="backends">Backends</h3>
 <p>LPython ships with the following backends, which emit final translations of the user&rsquo;s input code:</p>
@@ -2250,7 +2250,7 @@ Conda (<code>conda install -c conda-forge lpython</code>), or build from
 </span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>show()
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 23:09:08:~/lpython_project % lpython main.py --backend<span style="color:#f92672">=</span>c --link-numpy
 </span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>lp<span style="color:#f92672">)</span> 23:10:44:~/lpython_project % <span style="color:#75715e"># Works see the graph below</span>
-</span></span></code></pre></div><p><img src="https://github.com/lcompilers/lpython.org-deploy/blob/main/content/blog/images/graph.png" alt="Output graph"></p>
+</span></span></code></pre></div><p><img src="https://lpython.org/blog/images/graph.png" alt="Output graph"></p>
 <p><strong>Visualization using Matplotlib: Mandelbrot Set</strong></p>
 <p><strong>main.py</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lpython <span style="color:#f92672">import</span> i32, f64, pythoncall, TypeVar
@@ -2333,8 +2333,8 @@ Conda (<code>conda install -c conda-forge lpython</code>), or build from
 </span></span><span style="display:flex;"><span>main.py util.py
 </span></span><span style="display:flex;"><span>$ lpython main.py --backend<span style="color:#f92672">=</span>c --link-numpy
 </span></span><span style="display:flex;"><span>Done.
-</span></span></code></pre></div><p><img src="https://github.com/lcompilers/lpython.org-deploy/blob/main/content/blog/images/gray.png" alt="mandelbrot-set-gray"></p>
-<p><img src="https://github.com/lcompilers/lpython.org-deploy/blob/main/content/blog/images/color.png" alt="mandelbrot-set-color"></p>
+</span></span></code></pre></div><p><img src="https://lpython.org/blog/images/gray.png" alt="mandelbrot-set-gray"></p>
+<p><img src="https://lpython.org/blog/images/color.png" alt="mandelbrot-set-color"></p>
 <h2 id="conclusion">Conclusion</h2>
 <p>The benchmarks support the claim that LPython is competitive with its competitors in all features it offers. In JIT, the execution times of LPython-compiled functions are at least as short as equivalent Numba functions. The speed of JIT compilation, itself, is slow in some cases because it currently depends on a C compiler to generate optimal binary code. For algorithms with rich data structures like <code>dict</code> (hash maps) and <code>list</code>, LPython shows much faster speed than Numba. In AoT compilation for tasks like the Dijkstra algorithm, LPython beats equivalent C++ code very comfortably. For an array-based implementation of the Floyd-Warshall algorithm, LPython generates code almost as fast as C++ does.</p>
 <p>The main takeaway is that LPython/LFortran generate fast code by default. Our benchmarks show that it&rsquo;s straightforward to write high-speed LPython code. We hope to raise expectations that LPython output will be in general at least as fast as the equivalent C++ code. Users love Python because of its many productivity advantages: great tooling, easy syntax, and rich data structures like lists, dicts, sets, and arrays. Because any LPython program is also an ordinary Python program, all the tools &ndash; debuggers and profilers, for instance &ndash; just work. Then, LPython delivers run-time speeds, even with rich data structures at least as short as alternatives in most cases.</p>
