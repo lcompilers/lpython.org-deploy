@@ -2,7 +2,7 @@
 title: "LPython: Novel, Fast, Retargetable Python Compiler"
 date: 2023-07-28
 tags: ["Python", "Announcement"]
-author: "[Ondřej Čertík](https://ondrejcertik.com/), [Brian Beckman](https://www.linkedin.com/in/brianbeckman), [Gagandeep Singh](https://github.com/czgdp1807), [Thirumalai Shaktivel](https://www.linkedin.com/in/thirumalai-shaktivel/), [Smit Lunagariya](https://www.linkedin.com/in/smit-lunagariya-356b93179/), [Ubaid Shaikh](https://Shaikh-Ubaid.github.io/), [Naman Gera](https://github.com/namannimmo10), [Pranav Goswami](https://www.linkedin.com/in/pranavgoswami1/), [Rohit Goswami](https://rgoswami.me), [Dominic Poerio](https://github.com/dpoerio), [Akshānsh Bhatt](https://github.com/akshanshbhatt), [Virendra Kabra](https://www.linkedin.com/in/virendrakabra/)"
+author: "[Ondřej Čertík](https://ondrejcertik.com/), [Brian Beckman](https://www.linkedin.com/in/brianbeckman), [Gagandeep Singh](https://github.com/czgdp1807), [Thirumalai Shaktivel](https://www.linkedin.com/in/thirumalai-shaktivel/), [Smit Lunagariya](https://www.linkedin.com/in/smit-lunagariya-356b93179/), [Ubaid Shaikh](https://Shaikh-Ubaid.github.io/), [Naman Gera](https://github.com/namannimmo10), [Pranav Goswami](https://www.linkedin.com/in/pranavgoswami1/), [Rohit Goswami](https://rgoswami.me), [Dominic Poerio](https://github.com/dpoerio), [Akshānsh Bhatt](https://github.com/akshanshbhatt), [Virendra Kabra](https://www.linkedin.com/in/virendrakabra/), [Luthfan Lubis](https://github.com/ansharlubis)"
 type: post
 draft: false
 ---
