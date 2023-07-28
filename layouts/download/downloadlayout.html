@@ -12,14 +12,14 @@
     in the Documentation.
 
 
-{{ $tarballs := getJSON "https://raw.githubusercontent.com/lfortran/tarballs/master/docs/data.json" }}
+{{ $lpython_releases := getJSON "https://api.github.com/repos/lcompilers/lpython/releases" }}
     <h2>Releases</h2>
     Latest release:
     <ul>
-        {{ range first 1 (sort $tarballs.release ".created" "desc") }}
+        {{ range first 1 ($lpython_releases) }}
         <li>
-            <a href="{{ .url }}">lfortran-{{ .version }}.tar.gz</a>
-            ({{ dateFormat "Jan 2, 2006" .created }})
+            <a href="{{ .html_url }}">lpython-{{ .tag_name }}</a>
+            ({{ dateFormat "Jan 2, 2006" .published_at }})
         </li>
         {{ end }}
     </ul>
@@ -30,24 +30,14 @@
     </a>
     <div id="all_releases" class="collapse">
         <ul>
-            {{ range (sort $tarballs.release ".created" "desc") }}
+            {{ range ($lpython_releases) }}
             <li>
-                <a href="{{ .url }}">lfortran-{{ .version }}.tar.gz</a>
-                ({{ dateFormat "Jan 2, 2006" .created }})
+                <a href="{{ .html_url }}">lpython-{{ .tag_name }}</a>
+                ({{ dateFormat "Jan 2, 2006" .published_at }})
             </li>
             {{ end }}
         </ul>
     </div>
-    <h2>Development Version</h2>
-    Latest development version in master:
-    <ul>
-        {{ range first 1 (sort $tarballs.dev ".created" "desc") }}
-        <li>
-            <a href="{{ .url }}">lfortran-{{ .version }}.tar.gz</a>
-            ({{ dateFormat "Jan 2, 2006" .created }})
-        </li>
-        {{ end }}
-    </ul>
       {{ .Content }}
     </div>
   </div>

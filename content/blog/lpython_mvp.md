@@ -1,8 +1,8 @@
 ---
-title: "LPython: Making Python faster with LLVM"
+title: "LPython: Novel, Fast, Retargetable Python Compiler"
 date: 2023-07-28
 tags: ["Python", "Announcement"]
-author: "[Ondřej Čertík](https://ondrejcertik.com/), [Brian Beckman](https://www.linkedin.com/in/brianbeckman), [Gagandeep Singh](https://github.com/czgdp1807), [Thirumalai Shaktivel](https://www.linkedin.com/in/thirumalai-shaktivel/), [Rohit Goswami](https://rgoswami.me), [Smit Lunagariya](https://www.linkedin.com/in/smit-lunagariya-356b93179/), [Ubaid Shaikh](https://Shaikh-Ubaid.github.io/), [Pranav Goswami](https://www.linkedin.com/in/pranavgoswami1/), [Virendra Kabra] (https://www.linkedin.com/in/virendrakabra/)"
+author: "[Ondřej Čertík](https://ondrejcertik.com/), [Brian Beckman](https://www.linkedin.com/in/brianbeckman), [Gagandeep Singh](https://github.com/czgdp1807), [Thirumalai Shaktivel](https://www.linkedin.com/in/thirumalai-shaktivel/), [Smit Lunagariya](https://www.linkedin.com/in/smit-lunagariya-356b93179/), [Ubaid Shaikh](https://Shaikh-Ubaid.github.io/), [Naman Gera](https://github.com/namannimmo10), [Pranav Goswami](https://www.linkedin.com/in/pranavgoswami1/), [Rohit Goswami](https://rgoswami.me), [Dominic Poerio](https://github.com/dpoerio), [Akshānsh Bhatt](https://github.com/akshanshbhatt), [Virendra Kabra] (https://www.linkedin.com/in/virendrakabra/)"
 type: post
 draft: false
 ---
@@ -45,7 +45,91 @@ for i0 in range(0, length_dim_0):
 
 After applying all the ASR-to-ASR passes, LPython sends the final ASR to the backends selected by the user, via command-line arguments like, `--show-c` (generates C code), `--show-llvm` (generates LLVM code).
 
-<!-- TODO: Add examples of --show-c and --show-llvm command line argument -->
+One can also see the generated C or LLVM code using the following
+```py
+from lpython import i32
+
+def main():
+    x: i32
+    x = (2+3)*5
+    print(x)
+
+main()
+```
+```c
+$ lpython examples/expr2.py --show-c
+#include <inttypes.h>
+
+#include <stdlib.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <lfortran_intrinsics.h>
+
+void main0();
+void __main____global_statements();
+
+// Implementations
+void main0()
+{
+    int32_t x;
+    x = (2 + 3)*5;
+    printf("%d\n", x);
+}
+
+void __main____global_statements()
+{
+    main0();
+}
+
+int main(int argc, char* argv[])
+{
+    _lpython_set_argv(argc, argv);
+    __main____global_statements();
+    return 0;
+}
+```
+```llvm
+$ lpython examples/expr2.py --show-llvm
+; ModuleID = 'LFortran'
+source_filename = "LFortran"
+
+@0 = private unnamed_addr constant [2 x i8] c" \00", align 1
+@1 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
+@2 = private unnamed_addr constant [5 x i8] c"%d%s\00", align 1
+
+define void @__module___main_____main____global_statements() {
+.entry:
+  call void @__module___main___main0()
+  br label %return
+
+return:                                           ; preds = %.entry
+  ret void
+}
+
+define void @__module___main___main0() {
+.entry:
+  %x = alloca i32, align 4
+  store i32 25, i32* %x, align 4
+  %0 = load i32, i32* %x, align 4
+  call void (i8*, ...) @_lfortran_printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @2, i32 0, i32 0), i32 %0, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @1, i32 0, i32 0))
+  br label %return
+
+return:                                           ; preds = %.entry
+  ret void
+}
+
+declare void @_lfortran_printf(i8*, ...)
+
+define i32 @main(i32 %0, i8** %1) {
+.entry:
+  call void @_lpython_set_argv(i32 %0, i8** %1)
+  call void @__module___main_____main____global_statements()
+  ret i32 0
+}
+
+declare void @_lpython_set_argv(i32, i8**)
+```
 
 ### Machine Independent Code Optimisations
 
@@ -62,7 +146,434 @@ All optimizations are applied via one command-line argument, `--fast`. To select
 
 `--pass=inline_function_calls,loop_unroll`
 
-<!-- TODO: Add examples of transformed ASR after applying the above two optimisations -->
+Following is an examples of ASR and transformed ASR after applying the optimisations
+
+```py
+from lpython import i32
+
+def compute_x() -> i32:
+    return (2 * 3) ** 1 + 2
+
+def main():
+    x: i32 = compute_x()
+    print(x)
+
+main()
+```
+```clojure
+$ lpython examples/expr2.py --show-asr
+(TranslationUnit
+    (SymbolTable
+        1
+        {
+            __main__:
+                (Module
+                    (SymbolTable
+                        2
+                        {
+                            __main____global_statements:
+                                (Function
+                                    (SymbolTable
+                                        5
+                                        {
+
+                                        })
+                                    __main____global_statements
+                                    (FunctionType
+                                        []
+                                        ()
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    [main]
+                                    []
+                                    [(SubroutineCall
+                                        2 main
+                                        ()
+                                        []
+                                        ()
+                                    )]
+                                    ()
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                ),
+                            compute_x:
+                                (Function
+                                    (SymbolTable
+                                        3
+                                        {
+                                            _lpython_return_variable:
+                                                (Variable
+                                                    3
+                                                    _lpython_return_variable
+                                                    []
+                                                    ReturnVar
+                                                    ()
+                                                    ()
+                                                    Default
+                                                    (Integer 4)
+                                                    ()
+                                                    Source
+                                                    Public
+                                                    Required
+                                                    .false.
+                                                )
+                                        })
+                                    compute_x
+                                    (FunctionType
+                                        []
+                                        (Integer 4)
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    []
+                                    []
+                                    [(=
+                                        (Var 3 _lpython_return_variable)
+                                        (IntegerBinOp
+                                            (IntegerBinOp
+                                                (IntegerBinOp
+                                                    (IntegerConstant 2 (Integer 4))
+                                                    Mul
+                                                    (IntegerConstant 3 (Integer 4))
+                                                    (Integer 4)
+                                                    (IntegerConstant 6 (Integer 4))
+                                                )
+                                                Pow
+                                                (IntegerConstant 1 (Integer 4))
+                                                (Integer 4)
+                                                (IntegerConstant 6 (Integer 4))
+                                            )
+                                            Add
+                                            (IntegerConstant 2 (Integer 4))
+                                            (Integer 4)
+                                            (IntegerConstant 8 (Integer 4))
+                                        )
+                                        ()
+                                    )
+                                    (Return)]
+                                    (Var 3 _lpython_return_variable)
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                ),
+                            main:
+                                (Function
+                                    (SymbolTable
+                                        4
+                                        {
+                                            x:
+                                                (Variable
+                                                    4
+                                                    x
+                                                    []
+                                                    Local
+                                                    ()
+                                                    ()
+                                                    Default
+                                                    (Integer 4)
+                                                    ()
+                                                    Source
+                                                    Public
+                                                    Required
+                                                    .false.
+                                                )
+                                        })
+                                    main
+                                    (FunctionType
+                                        []
+                                        ()
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    [compute_x]
+                                    []
+                                    [(=
+                                        (Var 4 x)
+                                        (FunctionCall
+                                            2 compute_x
+                                            ()
+                                            []
+                                            (Integer 4)
+                                            ()
+                                            ()
+                                        )
+                                        ()
+                                    )
+                                    (Print
+                                        ()
+                                        [(Var 4 x)]
+                                        ()
+                                        ()
+                                    )]
+                                    ()
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                )
+                        })
+                    __main__
+                    []
+                    .false.
+                    .false.
+                ),
+            main_program:
+                (Program
+                    (SymbolTable
+                        6
+                        {
+                            __main____global_statements:
+                                (ExternalSymbol
+                                    6
+                                    __main____global_statements
+                                    2 __main____global_statements
+                                    __main__
+                                    []
+                                    __main____global_statements
+                                    Public
+                                )
+                        })
+                    main_program
+                    [__main__]
+                    [(SubroutineCall
+                        6 __main____global_statements
+                        2 __main____global_statements
+                        []
+                        ()
+                    )]
+                )
+        })
+    []
+)
+```
+```clojure
+$ lpython examples/expr2.py --show-asr --pass=inline_function_calls,unused_functions
+(TranslationUnit
+    (SymbolTable
+        1
+        {
+            __main__:
+                (Module
+                    (SymbolTable
+                        2
+                        {
+                            __main____global_statements:
+                                (Function
+                                    (SymbolTable
+                                        5
+                                        {
+
+                                        })
+                                    __main____global_statements
+                                    (FunctionType
+                                        []
+                                        ()
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    [main]
+                                    []
+                                    [(SubroutineCall
+                                        2 main
+                                        ()
+                                        []
+                                        ()
+                                    )]
+                                    ()
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                ),
+                            main:
+                                (Function
+                                    (SymbolTable
+                                        4
+                                        {
+                                            _lpython_return_variable_compute_x:
+                                                (Variable
+                                                    4
+                                                    _lpython_return_variable_compute_x
+                                                    []
+                                                    Local
+                                                    ()
+                                                    ()
+                                                    Default
+                                                    (Integer 4)
+                                                    ()
+                                                    Source
+                                                    Public
+                                                    Required
+                                                    .false.
+                                                ),
+                                            x:
+                                                (Variable
+                                                    4
+                                                    x
+                                                    []
+                                                    Local
+                                                    ()
+                                                    ()
+                                                    Default
+                                                    (Integer 4)
+                                                    ()
+                                                    Source
+                                                    Public
+                                                    Required
+                                                    .false.
+                                                ),
+                                            ~empty_block:
+                                                (Block
+                                                    (SymbolTable
+                                                        7
+                                                        {
+
+                                                        })
+                                                    ~empty_block
+                                                    []
+                                                )
+                                        })
+                                    main
+                                    (FunctionType
+                                        []
+                                        ()
+                                        Source
+                                        Implementation
+                                        ()
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        .false.
+                                        []
+                                        []
+                                        .false.
+                                    )
+                                    []
+                                    []
+                                    [(=
+                                        (Var 4 _lpython_return_variable_compute_x)
+                                        (IntegerBinOp
+                                            (IntegerBinOp
+                                                (IntegerBinOp
+                                                    (IntegerConstant 2 (Integer 4))
+                                                    Mul
+                                                    (IntegerConstant 3 (Integer 4))
+                                                    (Integer 4)
+                                                    (IntegerConstant 6 (Integer 4))
+                                                )
+                                                Pow
+                                                (IntegerConstant 1 (Integer 4))
+                                                (Integer 4)
+                                                (IntegerConstant 6 (Integer 4))
+                                            )
+                                            Add
+                                            (IntegerConstant 2 (Integer 4))
+                                            (Integer 4)
+                                            (IntegerConstant 8 (Integer 4))
+                                        )
+                                        ()
+                                    )
+                                    (GoTo
+                                        1
+                                        __1
+                                    )
+                                    (BlockCall
+                                        1
+                                        4 ~empty_block
+                                    )
+                                    (=
+                                        (Var 4 x)
+                                        (Var 4 _lpython_return_variable_compute_x)
+                                        ()
+                                    )
+                                    (Print
+                                        ()
+                                        [(Var 4 x)]
+                                        ()
+                                        ()
+                                    )]
+                                    ()
+                                    Public
+                                    .false.
+                                    .false.
+                                    ()
+                                )
+                        })
+                    __main__
+                    []
+                    .false.
+                    .false.
+                ),
+            main_program:
+                (Program
+                    (SymbolTable
+                        6
+                        {
+                            __main____global_statements:
+                                (ExternalSymbol
+                                    6
+                                    __main____global_statements
+                                    2 __main____global_statements
+                                    __main__
+                                    []
+                                    __main____global_statements
+                                    Public
+                                )
+                        })
+                    main_program
+                    [__main__]
+                    [(SubroutineCall
+                        6 __main____global_statements
+                        2 __main____global_statements
+                        []
+                        ()
+                    )]
+                )
+        })
+    []
+)
+```
 
 ### Ahead-of-Time (AoT) compilation
 
