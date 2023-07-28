@@ -16,7 +16,7 @@ def get_total_stars(name):
         return None
 
 # Data as on 2023-07-28
-#  Recent commits example
+# Recent commits example
 # https://github.com/cupy/cupy?from=2022-07-28&to=2023-07-28&type=c
 
 compilers_list = {
@@ -47,7 +47,7 @@ compilers_list = {
 }
 
 # To update GitHub stars
-# Caution: `get_total_stars`` works only on,
+# Caution: `get_total_stars`` works only once,
 # after that GitHub doesn't respond for a while.
 # Error: API rate limit exceeded for "ip_address"
 # Solution: change your IP (network)
