@@ -65,23 +65,23 @@ Please vote on issues in our [issue tracker] that you want us to prioritize
 ## Links to other available Python compilers:
 Name | Total Contributors | Recent Contributors | Total stars
 --|--|--|--
-[Pytorch](https://github.com/pytorch/pytorch)               | 2857 | 69253
+[PyTorch](https://github.com/pytorch/pytorch)               | 2857 | 69253
 [Pyston](https://github.com/pyston/pyston)                  | 1263 |  2426
-[Jax](https://github.com/google/jax)                        |  523 | 24010
+[JAX](https://github.com/google/jax)                        |  523 | 24010
 [Cython](https://github.com/cython/cython)                  |  435 |  8168
 [Numba](https://github.com/numba/numba)                     |  306 |  8790
-[Cupy](https://github.com/cupy/cupy)                        |  286 |  7062
+[CuPy](https://github.com/cupy/cupy)                        |  286 |  7062
 [Taichi](https://github.com/taichi-dev/taichi)              |  224 | 23503
 [Nuitka](https://github.com/Nuitka/Nuitka)                  |  138 |  9385
 [Pythran](https://github.com/serge-sans-paille/pythran)     |   58 |  1912
-[Pypy](https://github.com/pypy/pypy.org)                    |   -  |     -
+[PyPy](https://github.com/pypy/pypy.org)                    |   -  |     -
 [Weld](https://github.com/weld-project/weld)                |   35 |  2945
 [LPython](https://github.com/lcompilers/lpython)            |   34 |   141
-[Ironpython3](https://github.com/IronLanguages/ironpython3) |   33 |  2179
+[IronPython](https://github.com/IronLanguages/ironpython3)  |   33 |  2179
 [Pyccel](https://github.com/pyccel/pyccel)                  |   32 |   279
 [Pyjs](https://github.com/pyjs/pyjs)                        |   30 |  1123
 [Grumpy](https://github.com/google/grumpy)                  |   29 | 10580
-[Uarray](https://github.com/Quansight-Labs/uarray)          |   22 |    98
+[uarray](https://github.com/Quansight-Labs/uarray)          |   22 |    98
 [Shedskin](https://github.com/shedskin/shedskin)            |   20 |   701
 [Jython](https://github.com/jython/jython)                  |   18 |   897
 [Codon](https://github.com/exaloop/codon)                   |   10 | 13060
