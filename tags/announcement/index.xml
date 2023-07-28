@@ -14,7 +14,7 @@
       
       <guid>https://lpython.org/blog/2023/07/lpython-novel-fast-retargetable-python-compiler/</guid>
       <description>About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C++, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.
-Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython&amp;rsquo;s intermediate optimizations are independent of the backends and frontends.</description>
+We are releasing an alpha version of LPython, meaning it is expected you encounter bugs when you use it (please report them!</description>
     </item>
     
   </channel>

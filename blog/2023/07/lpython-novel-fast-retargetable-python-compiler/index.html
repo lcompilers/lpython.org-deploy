@@ -22,7 +22,7 @@
       <title>LPython: Novel, Fast, Retargetable Python Compiler - </title>
 
   <meta name="description" content="About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C&#43;&#43;, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.
-Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython&rsquo;s intermediate optimizations are independent of the backends and frontends."><script type="application/ld+json">
+We are releasing an alpha version of LPython, meaning it is expected you encounter bugs when you use it (please report them!"><script type="application/ld+json">
 {
     "@context": "http://schema.org",
     "@type": "WebSite",
@@ -70,9 +70,9 @@ Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, 
     "name" : "[Ondřej Čertík](https:\/\/ondrejcertik.com\/), [Brian Beckman](https:\/\/www.linkedin.com\/in\/brianbeckman), [Gagandeep Singh](https:\/\/github.com\/czgdp1807), [Thirumalai Shaktivel](https:\/\/www.linkedin.com\/in\/thirumalai-shaktivel\/), [Smit Lunagariya](https:\/\/www.linkedin.com\/in\/smit-lunagariya-356b93179\/), [Ubaid Shaikh](https:\/\/Shaikh-Ubaid.github.io\/), [Naman Gera](https:\/\/github.com\/namannimmo10), [Pranav Goswami](https:\/\/www.linkedin.com\/in\/pranavgoswami1\/), [Rohit Goswami](https:\/\/rgoswami.me), [Dominic Poerio](https:\/\/github.com\/dpoerio), [Akshānsh Bhatt](https:\/\/github.com\/akshanshbhatt), [Virendra Kabra](https:\/\/www.linkedin.com\/in\/virendrakabra\/), [Luthfan Lubis](https:\/\/github.com\/ansharlubis)"
   },
   "headline": "LPython: Novel, Fast, Retargetable Python Compiler",
-  "description" : "About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C\u002b\u002b, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.\nBased on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython\u0026rsquo;s intermediate optimizations are independent of the backends and frontends.",
+  "description" : "About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C\u002b\u002b, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.\nWe are releasing an alpha version of LPython, meaning it is expected you encounter bugs when you use it (please report them!",
   "inLanguage" : "en",
-  "wordCount":  5071 ,
+  "wordCount":  5108 ,
   "datePublished" : "2023-07-28T00:00:00",
   "dateModified" : "2023-07-28T00:00:00",
   "image" : "https:\/\/lpython.org\/",
@@ -93,7 +93,7 @@ Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, 
 
 <meta property="og:title" content="LPython: Novel, Fast, Retargetable Python Compiler" />
 <meta property="og:description" content="About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C&#43;&#43;, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.
-Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython&rsquo;s intermediate optimizations are independent of the backends and frontends.">
+We are releasing an alpha version of LPython, meaning it is expected you encounter bugs when you use it (please report them!">
 <meta property="og:url" content="https://lpython.org/blog/2023/07/lpython-novel-fast-retargetable-python-compiler/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="LPython" />
@@ -291,7 +291,7 @@ h2.h2heading {
     &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;24&nbsp;minutes
   
   
-    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;5071&nbsp;words
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;5108&nbsp;words
   
   
     &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;<a href="https://ondrejcertik.com/">Ondřej Čertík</a>, <a href="https://www.linkedin.com/in/brianbeckman">Brian Beckman</a>, <a href="https://github.com/czgdp1807">Gagandeep Singh</a>, <a href="https://www.linkedin.com/in/thirumalai-shaktivel/">Thirumalai Shaktivel</a>, <a href="https://www.linkedin.com/in/smit-lunagariya-356b93179/">Smit Lunagariya</a>, <a href="https://Shaikh-Ubaid.github.io/">Ubaid Shaikh</a>, <a href="https://github.com/namannimmo10">Naman Gera</a>, <a href="https://www.linkedin.com/in/pranavgoswami1/">Pranav Goswami</a>, <a href="https://rgoswami.me">Rohit Goswami</a>, <a href="https://github.com/dpoerio">Dominic Poerio</a>, <a href="https://github.com/akshanshbhatt">Akshānsh Bhatt</a>, <a href="https://www.linkedin.com/in/virendrakabra/">Virendra Kabra</a>, <a href="https://github.com/ansharlubis">Luthfan Lubis</a>
@@ -317,6 +317,10 @@ h2.h2heading {
       <article role="main" class="blog-post">
         <h2 id="about">About</h2>
 <p>LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C++, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.</p>
+<p>We are releasing an alpha version of LPython, meaning it is expected you
+encounter bugs when you use it (please report them!). You can install it using
+Conda (<code>conda install -c conda-forge lpython</code>), or build from
+<a href="https://github.com/lcompilers/lpython">source</a>.</p>
 <p>Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython&rsquo;s intermediate optimizations are independent of the backends and frontends. The two compilers, LPython and LFortran, share all benefits of improvements at the ASR level. &ldquo;Speed&rdquo; is the chief tenet of the LPython project. Our objective is to produce a compiler that both runs exceptionally fast and generates exceptionally fast code.</p>
 <p>In this blog, we describe features of LPython including Ahead-of-Time (AoT) compilation, JIT compilation, and interoperability with CPython. We also showcase LPython&rsquo;s performance against its competitors such as Numba and C++ via several benchmarks.</p>
 <p><img src="https://github.com/lcompilers/lpython.org-deploy/blob/main/content/blog/images/lcompilers_diagram.png" alt="LCompilers-Diagram"></p>
