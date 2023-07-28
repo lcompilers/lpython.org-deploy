@@ -45,7 +45,7 @@ for i0 in range(0, length_dim_0):
 
 After applying all the ASR-to-ASR passes, LPython sends the final ASR to the backends selected by the user, via command-line arguments like, `--show-c` (generates C code), `--show-llvm` (generates LLVM code).
 
-Add examples of `--show-c` and `--show-llvm`
+One can also see the generated C or LLVM code using the following
 ```py
 from lpython import i32
 
