@@ -8,11 +8,11 @@
     <language>en-us</language>
     <lastBuildDate>Fri, 28 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://lpython.org/tags/python/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>LPython: Making Python faster with LLVM</title>
-      <link>https://lpython.org/blog/2023/07/lpython-making-python-faster-with-llvm/</link>
+      <title>LPython: Novel, Fast, Retargetable Python Compiler</title>
+      <link>https://lpython.org/blog/2023/07/lpython-novel-fast-retargetable-python-compiler/</link>
       <pubDate>Fri, 28 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://lpython.org/blog/2023/07/lpython-making-python-faster-with-llvm/</guid>
+      <guid>https://lpython.org/blog/2023/07/lpython-novel-fast-retargetable-python-compiler/</guid>
       <description>About LPython is a Python compiler that can compile type-annotated Python code to optimized machine code. LPython offers several backends such as LLVM, C, C++, WASM, Julia and x86. LPython features quick compilation and runtime performance, as we show in the benchmarks in this blog. LPython also offers Just-In-Time (JIT) compilation and seamless interoperability with CPython.
 Based on the novel Abstract Semantic Representation (ASR) shared with LFortran, LPython&amp;rsquo;s intermediate optimizations are independent of the backends and frontends.</description>
     </item>
