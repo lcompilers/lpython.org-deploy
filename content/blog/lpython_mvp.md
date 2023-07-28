@@ -274,6 +274,7 @@ test()
 | LPython | 0.048 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | Numba | 0.048 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 **Pointwise multiplication of two 1-D arrays**
@@ -340,6 +341,7 @@ test()
 | Numba | 0.21 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | LPython | 0.21 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 **Insertion sort on lists**
@@ -422,6 +424,7 @@ test()
 | LPython | 0.10 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | Numba | 0.36 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 3.60 |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 **Quadratic-time implementation of the Dijkstra shortest-path algorithm on a fully connected graph**
@@ -557,6 +560,7 @@ test()
 | LPython | 0.87 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | Numba | 1.95 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 2.24 |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 ### Ahead-of-Time (AoT) Compilation
@@ -716,6 +720,7 @@ Note the optimization flags furnished to each compiler.
 | g++ | `-ffast-math -funroll-loops -O3`|
 | Python | - |
 
+<br/>
 
 <!-- TODO: Write a summary of the results -->
 
@@ -829,6 +834,7 @@ Note the optimization flags furnished to each compiler.
 | g++ | `-ffast-math -funroll-loops -O3`|
 | Python | - |
 
+<br/>
 <!-- TODO: Write a summary of the results -->
 
 ### Interoperability with CPython
