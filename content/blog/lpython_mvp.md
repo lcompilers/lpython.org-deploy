@@ -107,7 +107,7 @@ Note that time lpython `/Users/czgdp1807/lpython_project/debug.py --backend=c` i
 
 ### Just-In-Time Compilation
 
-Just-in-time compilation in LPython requires only decorating Python function with `@lpython`. The decorator takes an option for specifying the desired backend, as in, `@lpython(backend="c")` or `@lpython(backend="llvm")`. Only C is supported at present; LLVM and others will be added in the near future. The decorator also propagates backend-specific options. For example
+Just-in-time compilation in LPython requires only decorating Python function with `@lpython`. The decorator takes an option for specifying the desired backend, as in, `@lpython(backend="c")` or `@lpython(backend="llvm")`. The decorator also propagates backend-specific options. For example
 
 ```python
 @lpython(backend="c",
