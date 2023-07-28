@@ -261,6 +261,7 @@ test()
 | Numba | 0.20 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | LPython | 0.32 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.60 |
 
+<br/>
 
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
@@ -326,6 +327,7 @@ test()
 | Numba | 0.21 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | LPython | 0.31 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.48 |
 
+<br/>
 
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
@@ -407,6 +409,7 @@ test()
 | Numba | 0.35 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | LPython | 0.37 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.06 |
 
+<br/>
 
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
@@ -541,6 +544,7 @@ test()
 | LPython | 1.08 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.00 |
 | Numba | 1.69 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 1.56 |
 
+<br/>
 
 | Compiler | Execution Time (s) | System | Relative |
 |---|---|---|---|
@@ -701,6 +705,7 @@ int main() {
 | g++ | 1.358 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 2.21 |
 | Python | 7.365 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 12.01 |
 
+<br/>
 
 Note the optimization flags furnished to each compiler.
 
@@ -812,7 +817,7 @@ int main() {
 | LPython | 2.933 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 4.22 |
 | Python | 440.588 | AMD Ryzen 5 2500U (Ubuntu 22.04) | 633.94 |
 
-
+<br/>
 <!-- TODO: Remove above line if the following table looks good.-->
 
 Note the optimization flags furnished to each compiler.
