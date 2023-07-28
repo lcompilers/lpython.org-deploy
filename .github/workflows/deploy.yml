@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Main
+      uses: actions/checkout@v3
+
+    - name: Hugo setup
+      uses: klakegg/actions-hugo@1.0.0
+
+    - name: Clone the submodule theme
+      shell: bash -l {0}
+      run: git clone https://github.com/halogenica/beautifulhugo themes/beautifulhugo --depth=1
+
+    - name: Build Site
+      shell: bash -l {0}
+      run: hugo
+
+    - name: GIT Setup Config
+      shell: bash -l {0}
+      run: |
+        git config user.email "noreply@deploy"
+        git config user.name "Deploy"
+
+    - name: GIT Checkout gh-pages
+      shell: bash -l {0}
+      run: |
+        cp public/ ../public -r
+        git reset --hard
+        git fetch origin
+        git checkout gh-pages
+
+    - name: Misc Steps
+      shell: bash -l {0}
+      run: |
+        rm -rf *
+        mv ../public/* .
+        echo "lpython.org" > CNAME
+
+    - name: GIT Add and Commit
+      shell: bash -l {0}
+      run: |
+        git add .
+        COMMIT_MESSAGE="Deploying on $(date "+%Y-%m-%d %H:%M:%S")"
+        git commit -m "${COMMIT_MESSAGE}"
+
+    - name: GIT Deploy
+      run: git push origin gh-pages
