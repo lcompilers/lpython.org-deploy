@@ -62,4 +62,30 @@ Please vote on issues in our [issue tracker] that you want us to prioritize
 (feel free to create new ones if we are missing anything).
 
 
+## Links to other available Python compilers:
+Name | Total Contributors | Recent Contributors | Total stars
+--|--|--|--
+[Pytorch](https://github/pytorch/pytorch)               | 2857 | 75 | 69253
+[Pyston](https://github/pyston/pyston)                  | 1263 |  2 |  2426
+[Jax](https://github/google/jax)                        |  523 | 60 | 24010
+[Cython](https://github/cython/cython)                  |  435 | 18 |  8168
+[Numba](https://github/numba/numba)                     |  306 | 25 |  8790
+[Cupy](https://github/cupy/cupy)                        |  286 | 15 |  7062
+[Taichi](https://github/taichi-dev/taichi)              |  224 | 44 | 23503
+[Nuitka](https://github/Nuitka/Nuitka)                  |  138 | 36 |  9385
+[Pythran](https://github/serge-sans-paille/pythran)     |   58 |  9 |  1912
+[Pypy.org](https://github/pypy/pypy.org)                |   36 |  5 |    21
+[Weld](https://github/weld-project/weld)                |   35 |  0 |  2945
+[Lpython](https://github/lcompilers/lpython)            |   34 | 28 |   141
+[Ironpython3](https://github/IronLanguages/ironpython3) |   33 |  5 |  2179
+[Pyccel](https://github/pyccel/pyccel)                  |   32 | 17 |   279
+[Pyjs](https://github/pyjs/pyjs)                        |   30 |  0 |  1123
+[Grumpy](https://github/google/grumpy)                  |   29 |  0 | 10580
+[Uarray](https://github/Quansight-Labs/uarray)          |   22 |  1 |    98
+[Shedskin](https://github/shedskin/shedskin)            |   20 |  7 |   701
+[Jython](https://github/jython/jython)                  |   18 |  4 |   897
+[Seq](https://github/seq-lang/seq)                      |    9 |  0 |   680
+[Hope](https://github/jakeret/hope)                     |    6 |  0 |   385
+[Transonic](https://github/fluiddyn/transonic)          |    3 |  1 |   105
+
 [issue tracker]: https://github.com/lcompilers/lpython/issues
