@@ -67,6 +67,7 @@ Name | Total Contributors | Total stars
 --|--|--
 [PyTorch](https://github.com/pytorch/pytorch)               | 2857 | 69253
 [Pyston](https://github.com/pyston/pyston)                  | 1263 |  2426
+[mypyc](https://github.com/mypyc/mypyc)                     |  627 | 15995
 [JAX](https://github.com/google/jax)                        |  523 | 24010
 [Cython](https://github.com/cython/cython)                  |  435 |  8168
 [Numba](https://github.com/numba/numba)                     |  306 |  8790
