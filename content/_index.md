@@ -74,11 +74,13 @@ Name | Total Contributors | Total stars
 [CuPy](https://github.com/cupy/cupy)                        |  286 |  7062
 [Taichi](https://github.com/taichi-dev/taichi)              |  224 | 23503
 [Nuitka](https://github.com/Nuitka/Nuitka)                  |  138 |  9385
+[Brython](https://github.com/brython-dev/brython)           |   94 |  6058
 [Pythran](https://github.com/serge-sans-paille/pythran)     |   58 |  1912
 [PyPy](https://github.com/pypy/pypy.org)                    |   -  |     -
 [Weld](https://github.com/weld-project/weld)                |   35 |  2945
 [LPython](https://github.com/lcompilers/lpython)            |   34 |   141
 [IronPython](https://github.com/IronLanguages/ironpython3)  |   33 |  2179
+[Transcrypt](https://github.com/TranscryptOrg/transcrypt)   |   33 |  2727
 [Pyccel](https://github.com/pyccel/pyccel)                  |   32 |   279
 [Pyjs](https://github.com/pyjs/pyjs)                        |   30 |  1123
 [Grumpy](https://github.com/google/grumpy)                  |   29 | 10580
