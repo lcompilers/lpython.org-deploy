@@ -75,6 +75,7 @@ Name | Total Contributors | Total stars
 [Taichi](https://github.com/taichi-dev/taichi)              |  224 | 23503
 [Nuitka](https://github.com/Nuitka/Nuitka)                  |  138 |  9385
 [Brython](https://github.com/brython-dev/brython)           |   94 |  6058
+[Skulpt](https://github.com/skulpt/skulpt)                  |   91 |  3256
 [Pythran](https://github.com/serge-sans-paille/pythran)     |   58 |  1912
 [PyPy](https://github.com/pypy/pypy.org)                    |   -  |     -
 [Weld](https://github.com/weld-project/weld)                |   35 |  2945
