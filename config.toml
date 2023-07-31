@@ -20,10 +20,10 @@ googleAnalytics = "" # update google analytics id
     url = "download/"
     weight = 1
 
-[[menu.main]]
-    name = "Documentation"
-    url = "https://docs.lfortran.org/"
-    weight = 2
+#[[menu.main]]
+#    name = "Documentation"
+#    url = "https://docs.lfortran.org/"
+#    weight = 2
 
 [[menu.main]]
     name = "Blog"
