@@ -8,7 +8,7 @@ features that are being implemented.
 * **Best possible performance for numerical, array-oriented code**
     LPython gives you the speed you need for your numerical, array-oriented code. With LPython, you can write Python code that is as fast as C or C++. This is because LPython compiles your code to optimized machine code, which is the fastest way to run code on a computer.
 
-* **Code compatability with CPython**
+* **Code compatibility with CPython**
     If LPython compiles and runs a code, then it will run in CPython.
 
 * **Seamless interoperability with CPython**
