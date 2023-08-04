@@ -251,11 +251,13 @@ h2.h2heading {
   <div role="main" class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <p>LPython is a Python compiler that aims to provide optimized machine code by compiling type-annotated Python code. It offers several backends, including LLVM, C, C++, and WASM, which allow it to generate code into multiple target languages simultaneously. LPython&rsquo;s main focus is on speed and performance, and it achieves this through various features and optimizations.</p>
-<p>LPython is in alpha stage (meaning it is expected that it can break when you
-use it and that you will find bugs &mdash; please report them!) and will evolve
-further to encompass more extensive Python code and additional optimizations.
-<a href="https://lpython.org/blog/2023/07/lpython-novel-fast-retargetable-python-compiler/">LPython: Novel, Fast, Retargetable Python Compiler</a>.</p>
+        <p>LPython aggressively optimizes type-annotated Python code. It has several
+backends, including LLVM, C, C++, and WASM. LPython’s primary tenet is speed.</p>
+<p>LPython is in alpha stage (meaning users enthusiastically participate in bug
+reporting and fixing). LPython will compile more of Python in the future, and
+accumulate more optimizations, experimental and production-ready. LPython makes
+it easy to write new back-ends for custom, exotic, or unusual hardware.
+Release blog post: <a href="https://lpython.org/blog/2023/07/lpython-novel-fast-retargetable-python-compiler/">LPython: Novel, Fast, Retargetable Python Compiler</a>.</p>
 <p>Main repository at GitHub:
 <a href="https://github.com/lcompilers/lpython">https://github.com/lcompilers/lpython</a>
 <a class="github-button" href="https://github.com/lcompilers/lpython" data-icon="octicon-star" data-show-count="true" aria-label="Star lcompilers/lpython on GitHub">Star</a>
