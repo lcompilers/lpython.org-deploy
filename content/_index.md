@@ -69,6 +69,7 @@ Name | Total Contributors | Total stars
 [Pyston](https://github.com/pyston/pyston)                  | 1263 |  2426
 [mypyc](https://github.com/mypyc/mypyc)                     |  627 | 15995
 [JAX](https://github.com/google/jax)                        |  523 | 24010
+[MicroPython](https://github.com/micropython/micropython)   |  520 | 16998
 [Cython](https://github.com/cython/cython)                  |  435 |  8168
 [Numba](https://github.com/numba/numba)                     |  306 |  8790
 [CuPy](https://github.com/cupy/cupy)                        |  286 |  7062
