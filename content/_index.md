@@ -74,12 +74,12 @@ Name | Total Contributors | Total stars
 [Numba](https://github.com/numba/numba)                     |  306 |  8790
 [CuPy](https://github.com/cupy/cupy)                        |  286 |  7062
 [Taichi](https://github.com/taichi-dev/taichi)              |  224 | 23503
+[PyPy](https://www.pypy.org/)                               |  213 |     -
 [Triton](https://github.com/openai/triton)                  |  155 |  7846
 [Nuitka](https://github.com/Nuitka/Nuitka)                  |  138 |  9385
 [Brython](https://github.com/brython-dev/brython)           |   94 |  6058
 [Skulpt](https://github.com/skulpt/skulpt)                  |   91 |  3256
 [Pythran](https://github.com/serge-sans-paille/pythran)     |   58 |  1912
-[PyPy](https://github.com/pypy/pypy.org)                    |   -  |     -
 [Weld](https://github.com/weld-project/weld)                |   35 |  2945
 [LPython](https://github.com/lcompilers/lpython)            |   35 |   998
 [IronPython](https://github.com/IronLanguages/ironpython3)  |   33 |  2179
