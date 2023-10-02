@@ -90,6 +90,7 @@ Name | Total Contributors | Total stars
 [uarray](https://github.com/Quansight-Labs/uarray)          |   22 |    98
 [Shedskin](https://github.com/shedskin/shedskin)            |   20 |   701
 [Jython](https://github.com/jython/jython)                  |   18 |   897
+[Compyle](https://github.com/pypr/compyle)                  |   11 |    67
 [Codon](https://github.com/exaloop/codon)                   |   10 | 13060
 [Seq](https://github.com/seq-lang/seq)                      |    9 |   680
 [Hope](https://github.com/jakeret/hope)                     |    6 |   385
