@@ -33,7 +33,7 @@ compilers_list = {
     "serge-sans-paille/pythran" : [  58,  9,  1912],
     "pypy/pypy.org"             : [  36,  5,    21], # Website
     "weld-project/weld"         : [  35,  0,  2945],
-    "lcompilers/lpython"        : [  34, 28,   141],
+    "lcompilers/lpython"        : [  34, 28,   1075],
     "IronLanguages/ironpython3" : [  33,  5,  2179],
     "pyccel/pyccel"             : [  32, 17,   279], # 15 < 10 commits
     "pyjs/pyjs"                 : [  30,  0,  1123],
