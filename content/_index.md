@@ -80,6 +80,7 @@ Name | Total Contributors | Total stars
 [Brython](https://github.com/brython-dev/brython)           |   94 |  6058
 [Skulpt](https://github.com/skulpt/skulpt)                  |   91 |  3256
 [Pythran](https://github.com/serge-sans-paille/pythran)     |   58 |  1912
+[DaCe](https://github.com/spcl/dace)                        |   58 |   419
 [Weld](https://github.com/weld-project/weld)                |   35 |  2945
 [LPython](https://github.com/lcompilers/lpython)            |   35 |   998
 [IronPython](https://github.com/IronLanguages/ironpython3)  |   33 |  2179
