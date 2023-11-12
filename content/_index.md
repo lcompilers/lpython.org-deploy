@@ -73,7 +73,7 @@ Name | Total Contributors | Total stars
 [Cython](https://github.com/cython/cython)                  |  435 |  8168
 [Numba](https://github.com/numba/numba)                     |  306 |  8790
 [CuPy](https://github.com/cupy/cupy)                        |  286 |  7062
-[Taichi](https://github.com/taichi-dev/taichi)              |  224 | 23503
+[Taichi](https://github.com/taichi-dev/taichi)              |  226 | 24023
 [PyPy](https://www.pypy.org/)                               |  213 |     -
 [Triton](https://github.com/openai/triton)                  |  155 |  7846
 [Nuitka](https://github.com/Nuitka/Nuitka)                  |  138 |  9385
@@ -81,21 +81,21 @@ Name | Total Contributors | Total stars
 [Skulpt](https://github.com/skulpt/skulpt)                  |   91 |  3256
 [Pythran](https://github.com/serge-sans-paille/pythran)     |   58 |  1912
 [DaCe](https://github.com/spcl/dace)                        |   58 |   419
+[LPython](https://github.com/lcompilers/lpython)            |   44 |  1135
 [Weld](https://github.com/weld-project/weld)                |   35 |  2945
-[LPython](https://github.com/lcompilers/lpython)            |   35 |   998
 [IronPython](https://github.com/IronLanguages/ironpython3)  |   33 |  2179
 [Transcrypt](https://github.com/TranscryptOrg/transcrypt)   |   33 |  2727
 [Pyccel](https://github.com/pyccel/pyccel)                  |   32 |   279
 [Pyjs](https://github.com/pyjs/pyjs)                        |   30 |  1123
 [Grumpy](https://github.com/google/grumpy)                  |   29 | 10580
+[Mojo](https://github.com/modularml/mojo)                   |   26 | 15569
 [uarray](https://github.com/Quansight-Labs/uarray)          |   22 |    98
 [Shedskin](https://github.com/shedskin/shedskin)            |   20 |   701
 [Jython](https://github.com/jython/jython)                  |   18 |   897
+[Codon](https://github.com/exaloop/codon)                   |   12 | 13431
 [Compyle](https://github.com/pypr/compyle)                  |   11 |    67
-[Codon](https://github.com/exaloop/codon)                   |   10 | 13060
 [Seq](https://github.com/seq-lang/seq)                      |    9 |   680
 [Hope](https://github.com/jakeret/hope)                     |    6 |   385
-[Mojo](https://github.com/modularml/mojo)                   |    4 |  9088
 [Transonic](https://github.com/fluiddyn/transonic)          |    3 |   105
 
 Note: we use "-" if there is no github repository. If any compiler is missing,
